@@ -12,12 +12,20 @@ out/
 build
 dist
 
-# Production
-build
+# Enforce pnpm — this project uses pnpm (see packageManager in package.json).
+# Stray npm/yarn lockfiles cause non-reproducible installs.
+package-lock.json
+yarn.lock
 
 # Misc
 .DS_Store
 *.pem
+
+# Windows OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 
 # Debug
 npm-debug.log*
