@@ -1,17 +1,48 @@
 'use client';
 
-import { useState } from 'react';
-import { analyze, type CharClass } from '@/lib/entropy-core';
+import { useEffect, useState } from 'react';
+import type { Analysis, CharClass } from '@/lib/entropy-core';
+import type { Pattern } from '@/lib/strength';
 import { StarGlyph, WarnGlyph } from './Glyphs';
+
+const PATTERN_LABEL: Record<Pattern, string> = {
+  dictionary: 'Dictionary',
+  spatial: 'Keyboard',
+  repeat: 'Repeat',
+  sequence: 'Sequence',
+  regex: 'Year',
+  date: 'Date',
+  bruteforce: 'Random',
+};
+
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const superscript = (n: number) => String(n).split('').map((d) => SUP[+d] ?? d).join('');
+
+/** Human-readable guess count: small numbers literal, large ones as a × 10ⁿ. */
+function formatGuesses(g: number): string {
+  if (g < 1e4) return Math.round(g).toLocaleString('en-US');
+  const exp = Math.floor(Math.log10(g));
+  const mant = (g / 10 ** exp).toFixed(1);
+  return `${mant} × 10${superscript(exp)}`;
+}
 
 export default function EntropyAnalyze() {
   const [value, setValue] = useState('');
   const [show, setShow] = useState(false);
 
-  const a = analyze(value); // derived during render; analysis is cheap & instant
-  const weak = a.tier <= 1;
+  // The analyzer carries ~90 KB of dictionaries, so it's code-split: load it on
+  // mount (i.e. when the Analyze tab opens), then analysis runs instantly.
+  const [analyzeFn, setAnalyzeFn] = useState<((pw: string) => Analysis) | null>(null);
+  useEffect(() => {
+    let on = true;
+    import('@/lib/analyze').then((m) => { if (on) setAnalyzeFn(() => m.analyze); });
+    return () => { on = false; };
+  }, []);
+
+  const a = value && analyzeFn ? analyzeFn(value) : null;
+  const weak = a ? a.tier <= 1 : false;
   const col = weak ? 'var(--mag)' : 'var(--acid)';
-  const has = (k: CharClass) => a.classes.includes(k);
+  const has = (k: CharClass) => !!a && a.classes.includes(k);
 
   return (
     <div className="main">
@@ -24,9 +55,12 @@ export default function EntropyAnalyze() {
             Password
           </h3>
           <p>
-            Type or paste a password in the field. Strength, crack-time and composition are
-            computed <span className="star">instantly</span> and{' '}
-            <span className="star">never leave this device.</span>
+            Strength is modelled the way an attacker actually cracks passwords —
+            dictionaries, l33t, keyboard walks, repeats, sequences and dates —
+            then the <span className="star">cheapest attack path</span> is
+            costed across five scenarios. Everything is computed{' '}
+            <span className="star">instantly</span> and{' '}
+            <span className="star">never leaves this device.</span>
           </p>
         </div>
       </aside>
@@ -52,6 +86,8 @@ export default function EntropyAnalyze() {
 
           {!value ? (
             <div className="anempty">Analysis is instant · never leaves device</div>
+          ) : !a ? (
+            <div className="anempty">Analyzing…</div>
           ) : (
             <div aria-live="polite">
               <div className="str" style={{ padding: '22px 0 0', border: 0 }}>
@@ -69,7 +105,25 @@ export default function EntropyAnalyze() {
               </div>
 
               <div className="crackrow" style={{ border: 0, padding: '12px 0 0' }}>
-                Avg. crack time <b style={{ color: col }}>{a.crack}</b>
+                ≈ <b style={{ color: col }}>{formatGuesses(a.guesses)}</b> guesses to crack
+              </div>
+
+              {/* crack time across attack scenarios */}
+              <div className="scn">
+                {a.scenarios.map((s) => {
+                  const fast = s.seconds < 86400; // < 1 day = quick
+                  return (
+                    <div className="scnrow" key={s.key}>
+                      <span className="scnk">
+                        {s.label}
+                        <em>{s.sub}</em>
+                      </span>
+                      <span className="scnv" style={{ color: fast ? 'var(--mag)' : 'var(--acid)' }}>
+                        {s.time}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="comp">
@@ -102,17 +156,42 @@ export default function EntropyAnalyze() {
                 </div>
               </div>
 
-              <div className="notes">
-                {a.notes.map((n, i) => {
-                  const warn = !/no obvious/.test(n);
-                  return (
-                    <div key={i} className={`note${warn ? ' warn' : ''}`}>
-                      {warn ? <WarnGlyph className="nb" /> : <StarGlyph className="nb" />}
+              {/* how the password decomposes — the attack path */}
+              {a.sequence.length > 0 && (
+                <div className="seq">
+                  <div className="seqhead">Attack path · weakest decomposition</div>
+                  <div className="seqrow">
+                    {a.sequence.map((m, i) => {
+                      const random = m.pattern === 'bruteforce';
+                      return (
+                        <span key={i} className={`seqchip${random ? ' rand' : ''}`} title={m.detail}>
+                          <span className="seqtok">{m.token}</span>
+                          <span className="seqmeta">
+                            {PATTERN_LABEL[m.pattern]} · {Math.round(m.bits)}b
+                          </span>
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {(a.warning || a.suggestions.length > 0) && (
+                <div className="notes">
+                  {a.warning && (
+                    <div className="note warn">
+                      <WarnGlyph className="nb" />
+                      <span>{a.warning}</span>
+                    </div>
+                  )}
+                  {a.suggestions.map((n, i) => (
+                    <div key={i} className="note">
+                      <StarGlyph className="nb" />
                       <span>{n}</span>
                     </div>
-                  );
-                })}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
