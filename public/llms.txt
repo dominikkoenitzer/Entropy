@@ -1,0 +1,29 @@
+# Entropy
+
+> Entropy is a free, local-only password generator and strength analyzer. It creates cryptographically-strong random passwords and memorable passphrases, measures their entropy in bits, and estimates crack time — entirely in the browser. Nothing a user types or generates ever leaves their device.
+
+URL: https://entropy.punds.ch
+
+## What it does
+
+- **Generate** random passwords from configurable character sets (lowercase, uppercase, digits, symbols) using the Web Crypto API (`crypto.getRandomValues`) with unbiased rejection sampling — never `Math.random`.
+- **Generate** memorable multi-word passphrases.
+- **Analyze** any existing password: entropy in bits, a strength rating, an estimated time to crack, and a breakdown of character composition.
+- All computation is client-side. There is no backend, no API, no account, no telemetry of password values, and no persistence.
+
+## Key facts
+
+- Price: free, no account required.
+- Privacy: local-only by design; passwords never transmitted, stored, or logged.
+- Randomness: cryptographically secure (`crypto.getRandomValues`), not `Math.random`.
+- Entropy: measured in bits; each added bit doubles the guesses needed to crack a password.
+- Passphrases vs. passwords: a few random words can match a random string's entropy while being far easier to remember.
+- Platform: any modern web browser; built with Next.js and React.
+
+## FAQ
+
+- **Is it free?** Yes — no account, ads, or paywalls.
+- **Does it send passwords anywhere?** No. Everything runs locally in the browser.
+- **How are passwords generated?** With the browser's cryptographically-strong RNG and unbiased sampling.
+- **What is password entropy?** A bit-count measure of unpredictability; more bits means exponentially longer crack time.
+- **Can I check my own password?** Yes — Analyze mode rates entropy, strength, and crack time locally.
