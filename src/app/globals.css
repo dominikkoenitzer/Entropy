@@ -4,7 +4,12 @@
    entropy — Y2K theme, borderless edition
    Neon (acid + magenta) on near-black. No hard rule-grid: sections
    are separated by spacing + filled surfaces instead of 2px borders.
-   Mobile-first; expands to a rail + stage layout on wide screens.
+
+   Responsive model: FLUID. Type and spacing scale continuously with the
+   viewport via clamp(), so every resolution from ~320px phones up to large
+   desktops gets proportioned UI without snapping. Media queries are reserved
+   for true structural changes (two-column ⇄ stacked) and a few edge fixes
+   (very narrow phones, coarse pointers, short landscape).
    ============================================================ */
 
 :root {
@@ -25,11 +30,22 @@
   --font-ui: var(--ff-grotesk, "Space Grotesk"), system-ui, sans-serif;
   --font-mono: var(--ff-mono, "JetBrains Mono"), ui-monospace, monospace;
 
+  /* Fluid spacing tokens — one source of truth for the layout rhythm so the
+     whole poster tightens on phones and breathes on desktops in lockstep. */
+  --shell-pad:  clamp(10px, 2.8vw, 22px);   /* page padding around the poster */
+  --shell-gap:  clamp(12px, 2.2vw, 16px);   /* gaps between major sections */
+  --panel-pad:  clamp(13px, 1.8vw, 16px);   /* rail / stage inner padding */
+  --panel-gap:  clamp(10px, 1.4vw, 12px);   /* gaps inside rail / stage */
+
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
-html, body { height: 100%; }
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;   /* don't let mobile inflate our type */
+  text-size-adjust: 100%;
+}
 
 body {
   margin: 0;
@@ -41,12 +57,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px;
-  min-height: 100%;
+  padding: var(--shell-pad);
+  min-height: 100dvh;               /* fill the dynamic viewport on mobile */
   overflow-x: hidden;
 }
 
-main { width: 100%; max-width: 1100px; min-width: 0; }
+main { width: 100%; max-width: 1160px; min-width: 0; }
 
 /* ---- poster shell (borderless) ---- */
 .poster {
@@ -54,11 +70,11 @@ main { width: 100%; max-width: 1100px; min-width: 0; }
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--shell-gap);
 }
 
 /* ---- header ---- */
-.htop { display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--acid); white-space: nowrap; }
+.htop { display: flex; align-items: center; gap: 10px; font-size: clamp(10px, 2.6vw, 12px); letter-spacing: 1.5px; text-transform: uppercase; color: var(--acid); white-space: nowrap; }
 .htop .star { width: 16px; height: 16px; flex: none; display: block; color: var(--acid); }
 .htop .t { font-weight: 700; flex: none; }
 .htop .dots { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; color: var(--acid-dim); letter-spacing: 2px; }
@@ -68,7 +84,7 @@ main { width: 100%; max-width: 1100px; min-width: 0; }
 /* ---- tabs (filled segments, no dividers) ---- */
 .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .tabs button {
-  font-family: var(--font-ui); font-size: 13px; font-weight: 700; letter-spacing: 2.5px;
+  font-family: var(--font-ui); font-size: clamp(12px, 3vw, 13px); font-weight: 700; letter-spacing: 2.5px;
   text-transform: uppercase; padding: 14px 0; border: 0; cursor: pointer;
   background: var(--surface); color: var(--ink-dim);
   transition: background .14s, color .14s, transform .06s;
@@ -76,27 +92,29 @@ main { width: 100%; max-width: 1100px; min-width: 0; }
 .tabs button:active { transform: scale(.985); }
 .tabs button[aria-selected="true"] { background: var(--acid); color: #000; }
 .tabs button:not([aria-selected="true"]):hover { background: var(--surface-2); color: var(--acid); }
-.tabs.type2 button { font-size: 11px; padding: 11px 0; letter-spacing: 3px; }
+.tabs.type2 button { font-size: clamp(10px, 2.6vw, 11px); padding: 11px 0; letter-spacing: 3px; }
 .tabs.type2 button[aria-selected="true"] { background: var(--mag); color: #000; }
 .tabs.type2 button:not([aria-selected="true"]):hover { color: var(--mag); }
 
 /* ---- main two-column grid ---- */
-.main { display: grid; grid-template-columns: 360px 1fr; gap: 14px; }
-.rail { background: var(--black); display: flex; flex-direction: column; gap: 12px; padding: 14px; }
-.stage { background: var(--black); display: flex; flex-direction: column; gap: 12px; padding: 14px; min-width: 0; }
+/* minmax(0,1fr) on the stage lets long output shrink instead of forcing the
+   track wider (which would overflow the viewport). */
+.main { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: var(--shell-gap); }
+.rail { background: var(--black); display: flex; flex-direction: column; gap: var(--panel-gap); padding: var(--panel-pad); min-width: 0; }
+.stage { background: var(--black); display: flex; flex-direction: column; gap: var(--panel-gap); padding: var(--panel-pad); min-width: 0; }
 
 /* ---- ART panel ---- */
-.art { position: relative; background: var(--acid); flex: 1; min-height: 230px; overflow: hidden; }
+.art { position: relative; background: var(--acid); flex: 1; min-height: clamp(180px, 30vw, 240px); overflow: hidden; }
 .art svg { display: block; width: 100%; height: 100%; }
 .art .seedtag { position: absolute; top: 10px; left: 12px; right: auto; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #000; opacity: .55; }
 
 /* ---- password hero ---- */
 .pwbar { display: flex; flex-direction: column; gap: 8px; }
-.pwlbl { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; }
+.pwlbl { display: flex; justify-content: space-between; gap: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; }
 .pw {
-  font-family: var(--font-mono); font-size: 28px; font-weight: 700; line-height: 1.35;
+  font-family: var(--font-mono); font-size: clamp(17px, 4.8vw, 29px); font-weight: 700; line-height: 1.35;
   word-break: break-all; cursor: pointer; letter-spacing: 1px; min-height: 28px;
-  background: var(--black-2); padding: 14px 16px;
+  background: var(--black-2); padding: clamp(12px, 2.4vw, 15px) clamp(13px, 2.6vw, 16px);
 }
 .pw .ch { transition: opacity .15s; }
 .pw .lower  { color: var(--paper); }
@@ -108,13 +126,13 @@ main { width: 100%; max-width: 1100px; min-width: 0; }
 @keyframes fk { 50% { opacity: .25; } }
 
 /* ---- strength ---- */
-.str { display: flex; align-items: center; gap: 12px; }
-.blocks { display: flex; gap: 5px; flex: none; }
-.blocks i { width: 26px; height: 18px; flex: none; background: var(--surface); transition: background .25s; }
+.str { display: flex; align-items: center; gap: clamp(8px, 2vw, 12px); }
+.blocks { display: flex; gap: clamp(4px, 1.2vw, 5px); flex: none; }
+.blocks i { width: clamp(16px, 4.6vw, 26px); height: 18px; flex: none; background: var(--surface); transition: background .25s; }
 .blocks i.on-acid { background: var(--acid); }
 .blocks i.on-mag { background: var(--mag); }
-.str .lbl { font-size: 15px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
-.str .bits { margin-left: auto; font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--paper); white-space: nowrap; }
+.str .lbl { font-size: clamp(13px, 3.6vw, 15px); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
+.str .bits { margin-left: auto; font-family: var(--font-mono); font-size: clamp(12px, 3.2vw, 14px); font-weight: 700; color: var(--paper); white-space: nowrap; }
 .str .bits span { color: var(--ink-dim); }
 .crackrow { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; }
 .crackrow b { color: var(--acid); }
@@ -122,13 +140,13 @@ main { width: 100%; max-width: 1100px; min-width: 0; }
 /* ---- actions ---- */
 .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 2px; }
 .acts button {
-  font-family: var(--font-ui); font-size: 14px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; padding: 17px 0; border: 0; cursor: pointer;
+  font-family: var(--font-ui); font-size: clamp(12px, 3.2vw, 14px); font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; padding: clamp(14px, 2.6vw, 17px) 6px; border: 0; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 9px;
   transition: filter .12s, background .12s, color .12s, transform .06s;
 }
 .acts button:active { transform: scale(.985); }
-.acts svg { width: 16px; height: 16px; }
+.acts svg { width: 16px; height: 16px; flex: none; }
 .acts .regen { background: var(--surface); color: var(--acid); }
 .acts .regen:hover { background: var(--surface-2); }
 .acts .copy { background: var(--mag); color: #000; }
@@ -139,24 +157,24 @@ main { width: 100%; max-width: 1100px; min-width: 0; }
 .ctl { display: flex; flex-direction: column; }
 .ctlhead { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
 .ctlhead .k { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 700; }
-.ctlhead .v { font-family: var(--font-display); font-size: 38px; line-height: .8; color: var(--acid); }
+.ctlhead .v { font-family: var(--font-display); font-size: clamp(30px, 6.5vw, 40px); line-height: .8; color: var(--acid); }
 input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 14px; background: var(--surface); border: 0; border-radius: 0; outline: none; cursor: pointer; }
 input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 24px; background: var(--mag); border: 0; cursor: pointer; }
 input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var(--mag); border: 0; border-radius: 0; cursor: pointer; }
 .scale { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; color: var(--ink-dim); margin-top: 6px; }
 
 .grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-.sq { font-family: var(--font-mono); font-size: 17px; font-weight: 800; padding: 14px 0; background: var(--surface); border: 0; color: var(--ink-dim); cursor: pointer; transition: background .12s, color .12s; text-align: center; }
+.sq { font-family: var(--font-mono); font-size: clamp(15px, 4vw, 17px); font-weight: 800; padding: 14px 0; background: var(--surface); border: 0; color: var(--ink-dim); cursor: pointer; transition: background .12s, color .12s; text-align: center; }
 .sq small { display: block; font-family: var(--font-ui); font-size: 8.5px; font-weight: 700; letter-spacing: 1px; margin-top: 4px; }
 .sq[aria-pressed="true"] { background: var(--acid); color: #000; }
 .sq:not([aria-pressed="true"]):hover { background: var(--surface-2); color: var(--acid); }
-.wide { width: 100%; margin-top: 10px; font-family: var(--font-ui); font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 14px 0; background: var(--surface); border: 0; color: var(--ink-dim); cursor: pointer; transition: background .12s, color .12s; }
+.wide { width: 100%; margin-top: 10px; font-family: var(--font-ui); font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 14px 6px; background: var(--surface); border: 0; color: var(--ink-dim); cursor: pointer; transition: background .12s, color .12s; }
 .wide[aria-pressed="true"] { background: var(--mag); color: #000; }
 .wide:not([aria-pressed="true"]):hover { background: var(--surface-2); color: var(--mag); }
 
 .sublabel { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 700; margin: 16px 0 9px; }
 .sepgrid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-.sepbtn { font-family: var(--font-mono); font-size: 18px; font-weight: 800; padding: 12px 0; background: var(--surface); border: 0; color: var(--ink-dim); cursor: pointer; transition: background .12s, color .12s; }
+.sepbtn { font-family: var(--font-mono); font-size: clamp(16px, 4.4vw, 18px); font-weight: 800; padding: 12px 0; background: var(--surface); border: 0; color: var(--ink-dim); cursor: pointer; transition: background .12s, color .12s; }
 .sepbtn[aria-pressed="true"] { background: var(--acid); color: #000; }
 .sepbtn:not([aria-pressed="true"]):hover { background: var(--surface-2); color: var(--acid); }
 .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
@@ -176,17 +194,17 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 /* ---- analyze ---- */
 .anstage { display: flex; flex-direction: column; gap: 16px; flex: 1; }
 .aninput { display: flex; gap: 8px; }
-.aninput input { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 18px; font-weight: 600; color: var(--paper); background: var(--black-2); border: 0; padding: 16px; outline: none; }
+.aninput input { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: clamp(15px, 4vw, 18px); font-weight: 600; color: var(--paper); background: var(--black-2); border: 0; padding: clamp(13px, 3vw, 16px); outline: none; }
 .aninput input::placeholder { color: var(--ink-dim); }
-.aninput button { font-family: var(--font-ui); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 0 18px; background: var(--acid); color: #000; border: 0; cursor: pointer; flex: none; }
-.anempty { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-dim); text-align: center; padding: 40px 0; font-weight: 600; }
+.aninput button { font-family: var(--font-ui); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 0 clamp(14px, 3vw, 18px); background: var(--acid); color: #000; border: 0; cursor: pointer; flex: none; }
+.anempty { font-size: clamp(11px, 2.8vw, 12px); letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-dim); text-align: center; padding: 40px 6px; font-weight: 600; }
 .anrail { display: flex; flex-direction: column; }
-.anrail h3 { font-family: var(--font-display); font-size: 30px; color: var(--acid); font-weight: 400; line-height: .9; margin: 0 0 10px; }
+.anrail h3 { font-family: var(--font-display); font-size: clamp(24px, 6vw, 32px); color: var(--acid); font-weight: 400; line-height: .9; margin: 0 0 10px; }
 .anrail p { font-size: 13px; line-height: 1.6; color: var(--ink-dim); letter-spacing: .3px; margin: 0; }
 .anrail .star { color: var(--mag); }
 .comp { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-.comp > div { text-align: center; padding: 14px 0; background: var(--surface); }
-.comp .cval { font-family: var(--font-mono); font-size: 18px; font-weight: 800; color: var(--ink-dim); }
+.comp > div { text-align: center; padding: 14px 0; background: var(--surface); min-width: 0; }
+.comp .cval { font-family: var(--font-mono); font-size: clamp(15px, 4vw, 18px); font-weight: 800; color: var(--ink-dim); }
 .comp .clbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-dim); margin-top: 5px; }
 .comp .on { background: var(--surface-2); }
 .comp .on .cval { color: var(--acid); }
@@ -197,7 +215,7 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 
 /* ---- giant wordmark footer ---- */
 .wm { overflow: hidden; }
-.wm .word { font-family: var(--font-display); font-size: clamp(58px, 16vw, 118px); line-height: .9; letter-spacing: -2px; color: var(--acid); text-transform: uppercase; text-align: center; }
+.wm .word { font-family: var(--font-display); font-size: clamp(46px, 15vw, 122px); line-height: .9; letter-spacing: -2px; color: var(--acid); text-transform: uppercase; text-align: center; }
 .wm .word .x { color: var(--mag); }
 .wmfoot { display: flex; justify-content: space-between; gap: 12px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; }
 .wmfoot .c { color: var(--mag); font-weight: 700; }
@@ -205,16 +223,46 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 /* ---- keyboard focus ---- */
 :focus-visible { outline: 2px solid var(--mag); outline-offset: 2px; }
 
-/* ---- responsive: collapse to single column ---- */
+/* ============================================================
+   Responsive structure
+   ============================================================ */
+
+/* Collapse the rail + stage into one column. Stage (output/art) leads so the
+   result is what you see first on a phone; controls follow. */
 @media (max-width: 900px) {
-  body { padding: 12px; align-items: stretch; }
+  body { align-items: stretch; }
   .main { grid-template-columns: 1fr; }
   .rail { order: 2; }
   .stage { order: 1; }
-  .pw { font-size: 22px; }
-  .art { min-height: 200px; }
-  .htop { font-size: 11px; letter-spacing: 1px; }
-  .wm .word { font-size: clamp(52px, 19vw, 96px); }
+}
+
+/* Very narrow phones: keep the strength row from crowding and stack the two
+   primary actions so each stays a comfortable tap target. */
+@media (max-width: 360px) {
+  .blocks i { width: 15px; }
+  .acts { grid-template-columns: 1fr; }
+  .hsub, .wmfoot { letter-spacing: 1.5px; }
+}
+
+/* Touch devices: roomier drag target for the slider and list rows. */
+@media (pointer: coarse) {
+  input[type=range] { height: 18px; }
+  input[type=range]::-webkit-slider-thumb { height: 28px; width: 18px; }
+  input[type=range]::-moz-range-thumb { height: 28px; width: 18px; }
+  .hist li { padding: 13px 12px; }
+  .histhead button { padding: 4px 2px; margin: -4px -2px; }
+}
+
+/* Short landscape (phones turned sideways): reclaim vertical space. */
+@media (max-height: 560px) and (orientation: landscape) {
+  .art { min-height: 150px; }
+  .poster { gap: clamp(10px, 1.8vw, 14px); }
+}
+
+/* Large displays: let the poster grow a little so it doesn't feel marooned,
+   while the clamp() caps keep type from ballooning. */
+@media (min-width: 1600px) {
+  main { max-width: 1280px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
