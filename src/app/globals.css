@@ -213,6 +213,26 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 .note .nb { width: 13px; height: 13px; flex: none; margin-top: 2px; color: var(--acid); }
 .note.warn .nb { color: var(--mag); }
 
+/* ---- crack-time scenarios (analyze) ---- */
+.scn { display: flex; flex-direction: column; gap: 4px; }
+.scnrow { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; background: var(--surface); padding: 10px 12px; min-width: 0; }
+.scnk { display: flex; flex-direction: column; gap: 2px; font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--paper); font-weight: 700; min-width: 0; }
+.scnk em { font-style: normal; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .5px; color: var(--ink-dim); text-transform: none; }
+.scnv { font-family: var(--font-mono); font-size: clamp(12px, 3vw, 14px); font-weight: 700; text-align: right; white-space: nowrap; flex: none; }
+
+/* ---- attack-path decomposition (analyze) ---- */
+.seq { display: flex; flex-direction: column; gap: 9px; }
+.seqhead { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 700; }
+.seqrow { display: flex; flex-wrap: wrap; gap: 6px; }
+/* Borderless, like the rest of the poster: exploitable chunks read magenta
+   (weak), random/brute chunks read acid (strong) — the same colour semantic
+   used everywhere else. Surface fill, no rules. */
+.seqchip { display: flex; flex-direction: column; gap: 2px; padding: 8px 11px; background: var(--surface); min-width: 0; max-width: 100%; }
+.seqchip.rand { background: var(--black-2); }
+.seqtok { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--mag); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+.seqchip.rand .seqtok { color: var(--acid); }
+.seqmeta { font-size: 8.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-dim); font-weight: 700; white-space: nowrap; }
+
 /* ---- giant wordmark footer ---- */
 .wm { overflow: hidden; }
 .wm .word { font-family: var(--font-display); font-size: clamp(46px, 15vw, 122px); line-height: .9; letter-spacing: -2px; color: var(--acid); text-transform: uppercase; text-align: center; }
