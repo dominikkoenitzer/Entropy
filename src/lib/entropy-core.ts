@@ -1,8 +1,18 @@
 /* ============================================================
    entropy-core.ts — shared password engine
-   Faithful TypeScript port of the handoff's entropy-core.js.
-   Pure logic, no DOM. Do not re-derive the math.
+   Pure logic, no DOM.
+
+   Generation (crypto-strong random / passphrases) and the entropy math for
+   *generated* secrets live here. Strength ANALYSIS of arbitrary passwords is
+   delegated to ./strength — a guess-estimation engine that models real attack
+   strategies (dictionaries, l33t, keyboard walks, sequences, dates, brute
+   force) rather than naive charset entropy. (The original "do not re-derive
+   the math" port was deliberately replaced with this stronger model.)
    ============================================================ */
+
+import { humanizeSeconds, type Scenario } from './format';
+import type { PublicMatch } from './strength';
+import { PASSPHRASE_WORDS } from './wordlist.generated';
 
 export type CharClass = 'lower' | 'upper' | 'number' | 'symbol';
 
@@ -44,6 +54,12 @@ export interface Analysis {
   tier: number;
   tierInfo: TierInfo;
   notes: string[];
+  // --- advanced fields from the guess-estimation engine ---
+  guesses: number;            // estimated guesses for the cheapest attack
+  scenarios: Scenario[];      // crack time across attack models (online → GPU farm)
+  sequence: PublicMatch[];    // how the password decomposes (the attack path)
+  warning: string;            // headline weakness, if any
+  suggestions: string[];      // actionable advice
 }
 
 // --- character sets ---------------------------------------------------
@@ -75,34 +91,10 @@ function pick(str: string): string {
   return str[randInt(str.length)];
 }
 
-// --- compact, friendly wordlist (~280 short, clean words) -------------
-export const WORDS: readonly string[] = (
-  'able acid acorn actor adobe agile alarm album alert alley amber amble anchor angle ' +
-  'apple april arbor arena armor arrow aspen atlas attic audio aura autumn axiom bacon badge bagel ' +
-  'baker balsa bamboo banjo barge basil baton bayou beach beacon beam bean bear beaver beetle bench ' +
-  'berry birch bison blaze bloom blossom board bolt bonus boost booth boulder brace brave bread breeze ' +
-  'brick bridge brisk bronze brook broom brush bubble buckle buffalo bugle bulb bunny burst butter ' +
-  'cabin cable cactus camel candle canoe canyon cargo carol carpet carrot castle cedar cello cement ' +
-  'cereal chalk charm cheese cherry chess chime chip cider cinema circus citrus clamp clay clever cliff ' +
-  'cloak clock cloud clover cobalt cocoa comet compass copper coral cosmic cotton cougar cove cozy crane ' +
-  'crater crayon cream creek crescent crew crisp crystal cube curl cyan dahlia daisy dapper dash dawn ' +
-  'deck delta denim depot desert desk diamond diner dock dome donut dragon dream drift drum dune dusk ' +
-  'eagle ember emerald engine ether fable falcon fancy fern ferry fiber fig finch flame flask flint ' +
-  'float fjord forest forge fox fresh frost galaxy garden gecko ginger glade glass glove glow gold ' +
-  'granite grape grove guava hammer harbor hazel heron hickory honey hum ivory jade jasmine jelly jewel ' +
-  'jolly jungle kayak kettle koala lagoon lake lantern lemon lentil lilac lily linen lion lotus lunar ' +
-  'lyric mango maple marble meadow melon mint mocha moss motto mural mushroom nectar noble nomad north ' +
-  'nova oasis ocean olive onyx opal orbit orchid otter oxen pansy papaya parsley peach pearl pebble ' +
-  'pecan pepper petal pewter piano pigeon pine pixel planet plaza plum poem pony poppy prairie prism ' +
-  'puddle pumpkin quartz quiet quill quilt rabbit radar raven reef relay ribbon ridge river robin rocket ' +
-  'rose ruby saffron sage salmon sand sapphire satin scarf sequoia shadow shell sierra silk silver sky ' +
-  'slate sloth snow solar sonic spark sphinx spice spruce squid stable starling stone stork storm summit ' +
-  'sunset swan syrup table talon tango teak temple thistle thunder tiger timber toast token topaz totem ' +
-  'trail tulip tundra turtle umber valley vapor velvet vine violet vivid walnut wander wave whale wheat ' +
-  'willow window winter wolf wonder wren yarn yonder zebra zenith zephyr zinc'
-)
-  .split(/\s+/)
-  .filter(Boolean);
+// --- passphrase wordlist ----------------------------------------------
+// EFF "large" diceware list (7776 words → ~12.9 bits each), downloaded at
+// build time and bundled (see scripts/build-dict.mjs). Refresh with: pnpm dict.
+export const WORDS: readonly string[] = PASSPHRASE_WORDS;
 
 // --- entropy math -----------------------------------------------------
 export function poolSize(opts: Partial<RandomOptions>): number {
@@ -120,19 +112,29 @@ export function bitsRandom(length: number, pool: number): number {
   return Math.round(length * Math.log2(pool));
 }
 
-// bits for a passphrase: words drawn from list + extras
+// bits for a passphrase: words drawn from list + extras.
+// Honest accounting of the keyspace we actually sample from: each word adds
+// log2(listSize); an appended number adds log2(value space) + log2(which word).
+// Deterministic capitalize-first adds 0 bits (it's not random), so it's omitted.
 export function bitsWords(count: number, listSize: number, extras: { number?: boolean }): number {
   let b = count * Math.log2(listSize);
-  if (extras.number) b += Math.log2(10); // a digit appended somewhere
+  if (extras.number) b += Math.log2(90) + Math.log2(Math.max(count, 1)); // value 10..99, random word
   return Math.round(b);
 }
 
-// 0..4 tier from bits
+// 0..4 tier from bits. Thresholds are calibrated to a serious OFFLINE attacker
+// (fast-hash GPU, ~10^10 guesses/sec) so the label never contradicts the crack
+// time — e.g. a password that falls in seconds offline is never called "strong".
+//   < 40 bits  ~ cracked in minutes or less offline
+//   40–55      ~ hours to a few years
+//   56–71      ~ years to millennia
+//   72–95      ~ far beyond a lifetime
+//   ≥ 96       ~ astronomically infeasible
 export function tier(bits: number): number {
   if (bits < 40) return 0; // weak
-  if (bits < 60) return 1; // fair
-  if (bits < 80) return 2; // good
-  if (bits < 110) return 3; // strong
+  if (bits < 56) return 1; // fair
+  if (bits < 72) return 2; // good
+  if (bits < 96) return 3; // strong
   return 4; // maximum
 }
 
@@ -149,39 +151,12 @@ export function tierInfo(bits: number): TierInfo {
 }
 
 // --- crack time -------------------------------------------------------
-// assume 1e11 guesses/sec (offline, fast attacker), avg = half keyspace
+// Headline crack time for a GENERATED secret of known entropy: the offline
+// fast-hash attacker (~10^10 guesses/sec on a GPU). Matches the 'offline_fast'
+// scenario the analyzer reports, so both tabs speak the same language.
+export const OFFLINE_FAST_RATE = 1e10;
 export function crackTime(bits: number): string {
-  const guessesPerSec = 1e11;
-  const seconds = Math.pow(2, bits) / 2 / guessesPerSec;
-  return humanizeSeconds(seconds);
-}
-
-function humanizeSeconds(s: number): string {
-  if (s < 1e-3) return 'instantly';
-  if (s < 1) return 'less than a second';
-  const units: Array<[string, number]> = [
-    ['second', 60],
-    ['minute', 60],
-    ['hour', 24],
-    ['day', 365],
-    ['year', 1000],
-    ['millennium', 1e3],
-  ];
-  let val = s;
-  let name = 'second';
-  for (let i = 0; i < units.length; i++) {
-    const [n, factor] = units[i];
-    name = n;
-    if (val < factor || i === units.length - 1) break;
-    val /= factor;
-  }
-  if (name === 'millennium' && val >= 1e6) {
-    return 'longer than the universe has existed';
-  }
-  const rounded = val >= 10 ? Math.round(val) : Math.round(val * 10) / 10;
-  const plural = rounded === 1 ? '' : 's';
-  const pretty = rounded >= 1000 ? rounded.toLocaleString() : rounded;
-  return `${pretty} ${name}${plural}`;
+  return humanizeSeconds(Math.pow(2, bits) / OFFLINE_FAST_RATE);
 }
 
 // --- generators -------------------------------------------------------
@@ -236,59 +211,8 @@ export function generateWords(opts: WordOptions): GenResult {
   return { value: pw, bits, mode: 'words' };
 }
 
-// --- analyze an arbitrary password ------------------------------------
-const COMMON = [
-  'password', '123456', 'qwerty', 'letmein', 'admin',
-  'welcome', 'iloveyou', 'monkey', 'dragon', 'abc123',
-];
-
-export function analyze(pw: string): Analysis {
-  if (!pw) {
-    return {
-      value: '', bits: 0, length: 0, pool: 0, classes: [],
-      crack: '—', tier: 0, tierInfo: TIERS[0], notes: [],
-    };
-  }
-  const classes: CharClass[] = [];
-  let pool = 0;
-  if (/[a-z]/.test(pw)) { classes.push('lower'); pool += 26; }
-  if (/[A-Z]/.test(pw)) { classes.push('upper'); pool += 26; }
-  if (/[0-9]/.test(pw)) { classes.push('number'); pool += 10; }
-  if (/[^a-zA-Z0-9]/.test(pw)) { classes.push('symbol'); pool += 30; }
-
-  let bits = bitsRandom(pw.length, pool || 1);
-
-  // penalties for obvious weakness
-  const notes: string[] = [];
-  const lower = pw.toLowerCase();
-  if (COMMON.some((c) => lower.includes(c))) {
-    bits = Math.min(bits, 8);
-    notes.push('contains a common password');
-  }
-  if (/^(.)\1+$/.test(pw)) {
-    bits = Math.min(bits, 6);
-    notes.push('just one repeated character');
-  }
-  if (/0123|1234|2345|3456|4567|5678|6789|abcd|qwer/.test(lower)) {
-    bits = Math.round(bits * 0.6);
-    notes.push('contains a predictable sequence');
-  }
-  if (pw.length < 8) notes.push('shorter than 8 characters');
-  if (classes.length === 1) notes.push('only one character type');
-  if (notes.length === 0) notes.push('no obvious weaknesses');
-
-  return {
-    value: pw,
-    length: pw.length,
-    pool,
-    classes,
-    bits,
-    crack: crackTime(bits),
-    tier: tier(bits),
-    tierInfo: tierInfo(bits),
-    notes,
-  };
-}
+// analyze() lives in ./analyze (dynamically imported) so the heavy guess-
+// estimation dictionaries are code-split out of the generate path.
 
 // classify a single character (for color coding)
 export function classOf(ch: string): CharClass {
