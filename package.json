@@ -9,7 +9,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "dict": "node scripts/build-dict.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
