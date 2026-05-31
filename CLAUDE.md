@@ -13,6 +13,7 @@ pnpm dev          # dev server (Turbopack)
 pnpm build        # production build — also the primary correctness check
 pnpm type-check   # tsc --noEmit
 pnpm start        # serve a production build
+pnpm dict         # regenerate the bundled wordlists (downloads at build time)
 ```
 
 There are no tests. **`pnpm lint` is broken** — `next lint` was removed in Next.js 16 and this repo has no flat ESLint config yet. Verify changes with `pnpm type-check` and `pnpm build` instead; ignore any output from `pnpm lint`.
@@ -21,7 +22,12 @@ There are no tests. **`pnpm lint` is broken** — `next lint` was removed in Nex
 
 The codebase separates **pure logic** (`src/lib/`) from **React UI** (`src/components/`). All logic modules are DOM-free and deterministic-where-possible, so the UI layer stays thin.
 
-- **`src/lib/entropy-core.ts`** — the password engine. Character sets, crypto-strong random generation (`generateRandom`, `generateWords`), entropy math (`bitsRandom`, `bitsWords`), strength tiers, crack-time estimates, and `analyze()` for arbitrary passwords. This is a faithful port of an upstream `entropy-core.js`; the header comment says **"Do not re-derive the math."** Preserve the existing formulas and constants (guesses/sec, tier thresholds, penalty rules) unless explicitly asked to change them. Randomness uses `crypto.getRandomValues` with unbiased rejection sampling (`randInt`) — never `Math.random()` for password material.
+- **`src/lib/entropy-core.ts`** — the GENERATION engine + shared types. Character sets, crypto-strong random generation (`generateRandom`, `generateWords`), entropy math for generated secrets (`bitsRandom`, `bitsWords`), strength tiers, and the single-number `crackTime(bits)`. Randomness uses `crypto.getRandomValues` with unbiased rejection sampling (`randInt`) — **never** `Math.random()` for password material. Tier thresholds are calibrated to an *offline* attacker (~10¹⁰ guesses/s) so a label never contradicts the crack time. Imports nothing heavy, so the generate path stays light.
+- **`src/lib/strength.ts`** — the ANALYSIS engine: a self-contained, zxcvbn-grade guess estimator. Matches dictionary words (incl. reversed + l33t), keyboard walks, repeats, sequences, dates/years, and brute-force at the password's true cardinality; finds the cheapest attack path by dynamic programming; returns guesses → bits → multi-scenario crack times + an attack-path decomposition + feedback. Math is deliberately re-derived (it superseded an older naive port — don't reinstate charset-only entropy for analysis).
+- **`src/lib/analyze.ts`** — thin `analyze(pw): Analysis` wrapper over the engine. **Dynamically imported** by `EntropyAnalyze` so the ~90 KB dictionaries are code-split out of first paint / the generate path.
+- **`src/lib/strength-data.ts`** — l33t table + keyboard adjacency graphs (hand-authored), plus the ranked dictionaries imported from the generated file.
+- **`src/lib/strength-dict.generated.ts`** & **`src/lib/wordlist.generated.ts`** — GENERATED, committed, bundled. Analyzer dictionaries (passwords/english/names) and the EFF passphrase wordlist respectively. Built by `scripts/build-dict.mjs` (`pnpm dict`) which downloads reputable lists at build time — **no runtime network**. Don't hand-edit; regenerate. This is the only sanctioned way to add network (build-time, not runtime).
+- **`src/lib/format.ts`** — crack-time humanizer + attack scenarios. Dependency-free so both the light generate path and the heavy analyzer share it.
 - **`src/lib/art.ts`** — the "entropy made visible" generative art. A seeded PRNG (`mulberry32`) produces SVG contour paths. `randomSeed()` uses `Math.random()` (cosmetic only, not security-sensitive). Pure: returns path data, no DOM.
 - **`src/lib/ui.ts`** — small client helpers (`prefersReducedMotion`, `copyText` with an execCommand fallback).
 
@@ -29,7 +35,7 @@ Component tree (all under `src/app/page.tsx` → `<Entropy />`):
 
 - **`Entropy.tsx`** — shell + Generate/Analyze mode tabs.
 - **`EntropyGenerate.tsx`** — the bulk of the interactive logic: config state, length/word sliders, character-set toggles, history, keyboard shortcuts (`r` regenerate, `c` copy), and the count-up bits animation.
-- **`EntropyAnalyze.tsx`** — calls `analyze()` during render (analysis is cheap/instant) and shows strength, crack time, composition.
+- **`EntropyAnalyze.tsx`** — dynamically imports `analyze` on mount (code-split), then runs it during render (instant once loaded). Shows strength, the five crack-time scenarios, composition, the attack-path decomposition, and feedback.
 - **`EntropyArt.tsx`** — memoized SVG renderer for `buildArt(seed)`.
 - **`Glyphs.tsx`** — inline SVG star/warning icons (used instead of Unicode glyphs so platforms can't substitute color emoji).
 
