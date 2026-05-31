@@ -227,3 +227,18 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 }
 
 ::selection { background: var(--acid); color: #000; }
+
+/* Visually hidden but available to screen readers and crawlers — used for the
+   semantic <h1>/intro that describes the tool for SEO and assistive tech
+   without altering the poster layout. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
