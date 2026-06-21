@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Good passwords. Zero nonsense. A local-only password generator with personality.",
   "private": true,
-  "packageManager": "pnpm@9.0.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",

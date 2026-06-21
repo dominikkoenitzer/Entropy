@@ -12,10 +12,10 @@ out/
 build
 dist
 
-# Enforce pnpm — this project uses pnpm (see packageManager in package.json).
-# Stray npm/yarn lockfiles cause non-reproducible installs.
+# Bun only — bun.lock is committed. Stray lockfiles cause non-reproducible installs.
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
 
 # Misc
 .DS_Store
