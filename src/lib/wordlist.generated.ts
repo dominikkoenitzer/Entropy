@@ -1,6 +1,6 @@
 /* ============================================================
    wordlist.generated.ts — GENERATED FILE, DO NOT EDIT BY HAND.
-   Regenerate with:  pnpm dict   (see scripts/build-dict.mjs)
+   Regenerate with:  bun run dict   (see scripts/build-dict.mjs)
    Passphrase wordlist for the generator. Source: EFF "large" diceware wordlist
    (CC-BY 3.0 US, © Electronic Frontier Foundation). Bundled, no runtime network.
    ============================================================ */
