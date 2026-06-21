@@ -5,7 +5,7 @@
    are DOWNLOADED at build time by scripts/build-dict.mjs and live in
    ./strength-dict.generated. They are bundled — there is no runtime network
    call, consistent with the project's local-only constraint. To refresh them:
-   `pnpm dict`.
+   `bun run dict`.
 
    This module owns the small, stable, hand-authored data: the l33t-speak
    substitution table and the keyboard adjacency graphs built from physical

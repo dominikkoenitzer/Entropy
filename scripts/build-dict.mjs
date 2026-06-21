@@ -5,7 +5,7 @@
    them, and writes committed TypeScript modules the app bundles. Keeps the
    analyzer's dictionaries and the passphrase wordlist large & accurate WITHOUT
    hand-typing them and WITHOUT any runtime network call. Run on demand:
-       pnpm dict
+       bun run dict
 
    Outputs:
      src/lib/strength-dict.generated.ts  — analyzer dictionaries (code-split)
@@ -142,7 +142,7 @@ async function main() {
 
   const dictBanner = `/* ============================================================
    strength-dict.generated.ts — GENERATED FILE, DO NOT EDIT BY HAND.
-   Regenerate with:  pnpm dict   (see scripts/build-dict.mjs)
+   Regenerate with:  bun run dict   (see scripts/build-dict.mjs)
    Ranked analyzer dictionaries (rank = index + 1). Bundled, no runtime network.
    Sources: passwords SecLists (MIT) · english hermitdave FrequencyWords (MIT)
             names/surnames SecLists (MIT)
@@ -160,7 +160,7 @@ async function main() {
 
   const wordBanner = `/* ============================================================
    wordlist.generated.ts — GENERATED FILE, DO NOT EDIT BY HAND.
-   Regenerate with:  pnpm dict   (see scripts/build-dict.mjs)
+   Regenerate with:  bun run dict   (see scripts/build-dict.mjs)
    Passphrase wordlist for the generator. Source: EFF "large" diceware wordlist
    (CC-BY 3.0 US, © Electronic Frontier Foundation). Bundled, no runtime network.
    ============================================================ */

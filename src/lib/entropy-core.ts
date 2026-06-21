@@ -93,7 +93,7 @@ function pick(str: string): string {
 
 // --- passphrase wordlist ----------------------------------------------
 // EFF "large" diceware list (7776 words → ~12.9 bits each), downloaded at
-// build time and bundled (see scripts/build-dict.mjs). Refresh with: pnpm dict.
+// build time and bundled (see scripts/build-dict.mjs). Refresh with: bun run dict.
 export const WORDS: readonly string[] = PASSPHRASE_WORDS;
 
 // --- entropy math -----------------------------------------------------
