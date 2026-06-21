@@ -8,15 +8,17 @@ Entropy is a **local-only** password generator and analyzer — a single-page Ne
 
 ## Commands
 
+Package manager is **Bun** (the version is pinned in `.bun-version`).
+
 ```bash
-pnpm dev          # dev server (Turbopack)
-pnpm build        # production build — also the primary correctness check
-pnpm type-check   # tsc --noEmit
-pnpm start        # serve a production build
-pnpm dict         # regenerate the bundled wordlists (downloads at build time)
+bun run dev          # dev server (Turbopack)
+bun run build        # production build — also the primary correctness check
+bun run type-check   # tsc --noEmit
+bun run start        # serve a production build
+bun run dict         # regenerate the bundled wordlists (downloads at build time)
 ```
 
-There are no tests. **`pnpm lint` is broken** — `next lint` was removed in Next.js 16 and this repo has no flat ESLint config yet. Verify changes with `pnpm type-check` and `pnpm build` instead; ignore any output from `pnpm lint`.
+There are no tests. The `lint` script (`next lint`) is **broken** — `next lint` was removed in Next.js 16 and this repo has no flat ESLint config yet. Verify changes with `bun run type-check` and `bun run build` instead; ignore the `lint` script.
 
 ## Architecture
 
@@ -26,7 +28,7 @@ The codebase separates **pure logic** (`src/lib/`) from **React UI** (`src/compo
 - **`src/lib/strength.ts`** — the ANALYSIS engine: a self-contained, zxcvbn-grade guess estimator. Matches dictionary words (incl. reversed + l33t), keyboard walks, repeats, sequences, dates/years, and brute-force at the password's true cardinality; finds the cheapest attack path by dynamic programming; returns guesses → bits → multi-scenario crack times + an attack-path decomposition + feedback. Math is deliberately re-derived (it superseded an older naive port — don't reinstate charset-only entropy for analysis).
 - **`src/lib/analyze.ts`** — thin `analyze(pw): Analysis` wrapper over the engine. **Dynamically imported** by `EntropyAnalyze` so the ~90 KB dictionaries are code-split out of first paint / the generate path.
 - **`src/lib/strength-data.ts`** — l33t table + keyboard adjacency graphs (hand-authored), plus the ranked dictionaries imported from the generated file.
-- **`src/lib/strength-dict.generated.ts`** & **`src/lib/wordlist.generated.ts`** — GENERATED, committed, bundled. Analyzer dictionaries (passwords/english/names) and the EFF passphrase wordlist respectively. Built by `scripts/build-dict.mjs` (`pnpm dict`) which downloads reputable lists at build time — **no runtime network**. Don't hand-edit; regenerate. This is the only sanctioned way to add network (build-time, not runtime).
+- **`src/lib/strength-dict.generated.ts`** & **`src/lib/wordlist.generated.ts`** — GENERATED, committed, bundled. Analyzer dictionaries (passwords/english/names) and the EFF passphrase wordlist respectively. Built by `scripts/build-dict.mjs` (`bun run dict`) which downloads reputable lists at build time — **no runtime network**. Don't hand-edit; regenerate. This is the only sanctioned way to add network (build-time, not runtime).
 - **`src/lib/format.ts`** — crack-time humanizer + attack scenarios. Dependency-free so both the light generate path and the heavy analyzer share it.
 - **`src/lib/art.ts`** — the "entropy made visible" generative art. A seeded PRNG (`mulberry32`) produces SVG contour paths. `randomSeed()` uses `Math.random()` (cosmetic only, not security-sensitive). Pure: returns path data, no DOM.
 - **`src/lib/ui.ts`** — small client helpers (`prefersReducedMotion`, `copyText` with an execCommand fallback).
