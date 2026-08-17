@@ -8,6 +8,7 @@ A **local-only** password generator and analyzer with a Y2K poster aesthetic. Ge
 
 [![CI](https://github.com/dominikkoenitzer/Entropy/actions/workflows/ci.yml/badge.svg)](https://github.com/dominikkoenitzer/Entropy/actions/workflows/ci.yml)
 [![Live](https://img.shields.io/badge/live-entropy.punds.ch-ccff00?logo=vercel&logoColor=black)](https://entropy.punds.ch)
+[![tests](https://img.shields.io/badge/tests-33%20passing-ccff00)](src/lib/strength.test.ts)
 [![Local only](https://img.shields.io/badge/data-100%25%20local-ff00aa)](https://entropy.punds.ch)
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=black)
@@ -91,9 +92,10 @@ No configuration or API keys — Entropy runs entirely client-side.
 | `bun run start` | Serve the production build |
 | `bun run type-check` | `tsc --noEmit` |
 | `bun run lint` | ESLint (`eslint-config-next`) |
+| `bun run test` | Vitest suite for the estimation engine |
 | `bun run dict` | Regenerate the bundled wordlists (downloads at build time) |
 
-> Verify changes with `bun run type-check` and `bun run build` — CI runs both on every push and PR.
+> [`src/lib/strength.test.ts`](src/lib/strength.test.ts) covers the engine directly: one case per matcher (dictionary, l33t, reversed, spatial, repeat, sequence, bruteforce), the cheapest-path search, monotonicity of guesses in length and character set, and the `bits === log₂(guesses)` invariant. CI runs typecheck, lint, tests and build on every push and PR.
 
 ## Privacy
 
