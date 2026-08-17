@@ -53,3 +53,10 @@ next-env.d.ts
 *.swp
 *.swo
 *~
+
+# AI agent tooling (local only)
+CLAUDE.md
+AGENTS.md
+.claude/
+.agents/
+skills-lock.json
