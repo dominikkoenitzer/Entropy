@@ -17,6 +17,9 @@ A **local-only** password generator and analyzer with a Y2K poster aesthetic. Ge
 
 **[→ Try it at entropy.punds.ch](https://entropy.punds.ch)**
 
+
+<img src="docs/screenshot.png" alt="Entropy — password generator with live entropy readout" width="880" />
+
 </div>
 
 ---
