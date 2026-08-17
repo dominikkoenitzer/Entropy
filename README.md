@@ -90,9 +90,10 @@ No configuration or API keys — Entropy runs entirely client-side.
 | `bun run build` | Production build (also the primary correctness check) |
 | `bun run start` | Serve the production build |
 | `bun run type-check` | `tsc --noEmit` |
+| `bun run lint` | ESLint (`eslint-config-next`) |
 | `bun run dict` | Regenerate the bundled wordlists (downloads at build time) |
 
-> There's no test suite — verify changes with `bun run type-check` and `bun run build`. (`next lint` was removed in Next.js 16, so this project lints via the TypeScript compiler.)
+> Verify changes with `bun run type-check` and `bun run build` — CI runs both on every push and PR.
 
 ## Privacy
 
