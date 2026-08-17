@@ -134,4 +134,6 @@ GitHub Actions:
 
 ## Author
 
-Made by **[Dominik Könitzer](https://github.com/dominikkoenitzer)** · [entropy.punds.ch](https://entropy.punds.ch)
+**Dominik Könitzer** — software engineer in Zürich, Switzerland.
+
+[dominikkoenitzer.ch](https://dominikkoenitzer.ch) · [CV](https://dominikkoenitzer.ch/cv) · [@dominikkoenitzer](https://github.com/dominikkoenitzer) · [dominik.koenitzer@gmail.com](mailto:dominik.koenitzer@gmail.com)
