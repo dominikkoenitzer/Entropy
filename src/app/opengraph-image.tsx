@@ -10,7 +10,7 @@ export const contentType = 'image/png';
 const ACID = '#c6f000';
 const MAG = '#ff2e93';
 const PAPER = '#ededed';
-const DIM = '#6f7560';
+const DIM = '#81886f';
 
 export default function OpengraphImage() {
   return new ImageResponse(

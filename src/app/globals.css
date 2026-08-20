@@ -22,7 +22,7 @@
   --mag:      #ff2e93;
   --mag-dim:  #c41f70;
   --paper:    #ededed;
-  --ink-dim:  #6f7560;
+  --ink-dim:  #81886f;   /* 4.6:1 at worst against the surfaces below */
 
   /* next/font self-hosts these and exposes --ff-* on <html>; the literal
      names and generics are belt-and-suspenders fallbacks only. */
