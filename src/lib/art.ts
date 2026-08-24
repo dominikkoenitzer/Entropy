@@ -1,9 +1,10 @@
-/* ============================================================
-   art.ts — the "entropy made visible" contour generator.
-   A seeded PRNG (mulberry32) drives warped horizontal contour
-   lines, clipped to a circle. Reseeds on every generate.
-   Pure: returns SVG path data for React to render.
-   ============================================================ */
+/**
+ * The "entropy made visible" contour generator.
+ *
+ * A seeded PRNG (mulberry32) drives warped horizontal contour lines clipped to
+ * a circle, and reseeds on every generate. Pure: it hands back SVG path data
+ * and React renders it.
+ */
 
 export interface Art {
   paths: string[];

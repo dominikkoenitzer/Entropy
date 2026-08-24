@@ -4,7 +4,7 @@ import { ImageResponse } from 'next/og';
 
 // Apple touch icon (180×180, opaque PNG). iOS ignores SVG touch icons, so we
 // rasterize the same contour-art favicon (src/app/icon.svg) to PNG. Read at
-// build time — single source of truth, no drift from the SVG favicon.
+// build time, so there is one source of truth and no drift from the SVG favicon.
 export const size = { width: 180, height: 180 };
 export const contentType = 'image/png';
 

@@ -3,13 +3,13 @@
  * Imported by layout (metadata + JSON-LD), sitemap, robots, manifest, and the
  * dynamic OG/Twitter/icon image routes so every surface stays in sync.
  *
- * No password material is ever referenced here — this is purely public,
+ * No password material is ever referenced here. This is purely public,
  * build-time descriptive metadata, consistent with the project's local-only
  * privacy constraint.
  */
 
 export const SITE = {
-  /** Canonical production origin — no trailing slash. */
+  /** Canonical production origin, with no trailing slash. */
   url: 'https://entropy.punds.ch',
   name: 'Entropy',
   /** Used as the default <title> and OG title. */
@@ -44,7 +44,7 @@ export const KEYWORDS = [
   'diceware passphrase',
 ];
 
-/** Natural-language Q&A — feeds FAQPage rich results and is highly legible to
+/** Natural-language Q&A. Feeds FAQPage rich results and is highly legible to
  *  LLM/AI crawlers answering password questions. */
 export const FAQ: ReadonlyArray<{ q: string; a: string }> = [
   {

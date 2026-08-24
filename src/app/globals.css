@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
-/* ============================================================
-   entropy — Y2K theme, borderless edition
-   Neon (acid + magenta) on near-black. No hard rule-grid: sections
-   are separated by spacing + filled surfaces instead of 2px borders.
+/*
+   Y2K theme, borderless edition.
+   Neon (acid and magenta) on near-black. There is no hard rule-grid: sections
+   are separated by spacing and filled surfaces instead of 2px borders.
 
-   Responsive model: FLUID. Type and spacing scale continuously with the
-   viewport via clamp(), so every resolution from ~320px phones up to large
-   desktops gets proportioned UI without snapping. Media queries are reserved
-   for true structural changes (two-column ⇄ stacked) and a few edge fixes
-   (very narrow phones, coarse pointers, short landscape).
-   ============================================================ */
+   The responsive model is fluid. Type and spacing scale continuously with the
+   viewport via clamp(), so everything from a ~320px phone up to a large
+   desktop gets proportioned UI without snapping. Media queries are kept for
+   real structural changes (two-column to stacked) and a few edge fixes: very
+   narrow phones, coarse pointers, short landscape.
+*/
 
 :root {
   --black:    #0a0b08;
@@ -30,7 +30,7 @@
   --font-ui: var(--ff-grotesk, "Space Grotesk"), system-ui, sans-serif;
   --font-mono: var(--ff-mono, "JetBrains Mono"), ui-monospace, monospace;
 
-  /* Fluid spacing tokens — one source of truth for the layout rhythm so the
+  /* Fluid spacing tokens: one source of truth for the layout rhythm, so the
      whole poster tightens on phones and breathes on desktops in lockstep. */
   --shell-pad:  clamp(10px, 2.8vw, 22px);   /* page padding around the poster */
   --shell-gap:  clamp(12px, 2.2vw, 16px);   /* gaps between major sections */
@@ -243,9 +243,7 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 /* ---- keyboard focus ---- */
 :focus-visible { outline: 2px solid var(--mag); outline-offset: 2px; }
 
-/* ============================================================
-   Responsive structure
-   ============================================================ */
+/* --- Responsive structure --- */
 
 /* Collapse the rail + stage into one column. Stage (output/art) leads so the
    result is what you see first on a phone; controls follow. */
@@ -296,7 +294,7 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 
 ::selection { background: var(--acid); color: #000; }
 
-/* Visually hidden but available to screen readers and crawlers — used for the
+/* Visually hidden but available to screen readers and crawlers. Carries the
    semantic <h1>/intro that describes the tool for SEO and assistive tech
    without altering the poster layout. */
 .sr-only {

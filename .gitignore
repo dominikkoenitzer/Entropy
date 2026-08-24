@@ -12,7 +12,7 @@ out/
 build
 dist
 
-# Bun only — bun.lock is committed. Stray lockfiles cause non-reproducible installs.
+# Bun only. bun.lock is committed; stray lockfiles cause non-reproducible installs.
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
