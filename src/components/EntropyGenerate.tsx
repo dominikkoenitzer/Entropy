@@ -150,7 +150,7 @@ export default function EntropyGenerate() {
   }, []);
 
   // Event handlers read the current committed state from closure (always fresh),
-  // then update — no side effects inside state updaters.
+  // then update. No side effects inside state updaters.
   const applyCfg = (partial: Partial<Cfg>, animate = true) => {
     const next = { ...cfg, ...partial };
     setCfg(next);

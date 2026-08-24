@@ -49,7 +49,7 @@ function buildPaths(seed) {
 
 const paths = buildPaths(SEED);
 
-// Just the circle — no acid field, transparent corners. viewBox is cropped
+// Just the circle: no acid field, transparent corners. viewBox is cropped
 // tight to the outermost ring so the disc fills the icon edge-to-edge.
 const outer = r + 7;               // outer black ring radius (127)
 const half = outer + 3;            // tiny breathing room past the stroke (130)

@@ -5,7 +5,7 @@ import { SITE, KEYWORDS, structuredData } from '@/lib/seo';
 import './globals.css';
 
 // All three are self-hosted by next/font (downloaded at build time, no runtime
-// request to Google) — never substituted. Weights match the design spec exactly.
+// request to Google) and never substituted. Weights match the design spec exactly.
 const anton = Anton({
   weight: '400', // Anton ships a single weight
   subsets: ['latin'],
@@ -28,7 +28,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  // metadataBase makes every relative OG/Twitter/canonical URL absolute — the
+  // metadataBase makes every relative OG/Twitter/canonical URL absolute, which the
   // dynamic opengraph-image, twitter-image, icon and manifest routes resolve
   // against this origin automatically.
   metadataBase: new URL(SITE.url),
@@ -99,7 +99,7 @@ export default function RootLayout({
             explicit, machine-readable description for AI crawlers. */}
         <script
           type="application/ld+json"
-          // Static, build-time JSON from our own config — no user/secret input.
+          // Static, build-time JSON from our own config. No user or secret input.
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData()) }}
         />
         {children}

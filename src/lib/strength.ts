@@ -1,21 +1,21 @@
-/* ============================================================
-   strength.ts — guess-estimation engine (zxcvbn-grade, self-contained).
-
-   Models how a real attacker cracks a password rather than counting naive
-   charset entropy. It searches for the patterns an attacker would exploit —
-   dictionary words (incl. reversed and l33t-speak), keyboard walks, repeats,
-   sequences, dates and years — then finds, by dynamic programming, the
-   *cheapest* way to express the whole password as a chain of such patterns
-   (an attacker always takes the weakest path). Anything left unexplained is
-   charged at true brute force over the password's actual character set.
-
-   The result is an estimated number of guesses, which we turn into bits and
-   into crack times across five attack scenarios (rate-limited online up to an
-   offline GPU farm). Pure & local — no network, nothing persisted.
-
-   Math is principled (closely follows Wheeler/Dropbox's zxcvbn model) and
-   deliberately re-derived per explicit request, superseding the old port.
-   ============================================================ */
+/**
+ * A self-contained, zxcvbn-grade guess-estimation engine.
+ *
+ * It models how an attacker actually cracks a password instead of counting
+ * naive charset entropy. First it looks for the patterns an attacker would
+ * exploit: dictionary words (reversed and l33t-speak included), keyboard
+ * walks, repeats, sequences, dates and years. Then dynamic programming picks
+ * the cheapest way to express the whole password as a chain of those patterns,
+ * since an attacker always takes the weakest path. Whatever is left
+ * unexplained is charged at true brute force over the password's real
+ * character set.
+ *
+ * The output is an estimated number of guesses, turned into bits and into
+ * crack times across five attack scenarios, from rate-limited online up to an
+ * offline GPU farm. Nothing leaves the page and nothing is persisted.
+ *
+ * The model follows Wheeler's zxcvbn paper closely.
+ */
 
 import { DICTIONARIES, KEYBOARDS, L33T_TABLE } from './strength-data';
 import { crackScenarios, type Scenario } from './format';
@@ -106,9 +106,7 @@ function calcCardinality(pw: string): number {
   return Math.max(c, 10);
 }
 
-// =====================================================================
-//  Matchers
-// =====================================================================
+// --- Matchers ---
 
 function dictionaryMatch(password: string): Match[] {
   const out: Match[] = [];
@@ -330,9 +328,7 @@ function omnimatch(password: string): Match[] {
   ];
 }
 
-// =====================================================================
-//  Per-pattern guess estimators
-// =====================================================================
+// --- Per-pattern guess estimators ---
 
 function uppercaseVariations(token: string): number {
   const letters = token.replace(/[^a-zA-Z]/g, '');
@@ -451,9 +447,7 @@ function estimateGuesses(match: Match, password: string, cardinality: number): n
   return match.guesses;
 }
 
-// =====================================================================
-//  Minimum-guess search (dynamic programming over the optimal sequence)
-// =====================================================================
+// --- Minimum-guess search (dynamic programming over the optimal sequence) ---
 
 function mostGuessable(password: string, matches: Match[], cardinality: number): { guesses: number; sequence: Match[] } {
   const n = password.length;
@@ -532,9 +526,7 @@ function coreGuesses(password: string): { guesses: number; sequence: Match[] } {
   return mostGuessable(password, omnimatch(password), calcCardinality(password));
 }
 
-// =====================================================================
-//  Scoring → bits, scenarios, feedback
-// =====================================================================
+// --- Scoring → bits, scenarios, feedback ---
 
 function guessesToScore(guesses: number): number {
   const DELTA = 5;

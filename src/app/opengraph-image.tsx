@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { SITE } from '@/lib/seo';
 
-// Branded social card, generated at build/edge — no password material involved,
+// Branded social card, generated at build/edge. No password material involved,
 // no external font fetch. Palette mirrors the Y2K theme in globals.css.
 export const alt = SITE.title;
 export const size = { width: 1200, height: 630 };

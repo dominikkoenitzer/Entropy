@@ -4,7 +4,7 @@
 
 ### Good passwords. Zero nonsense.
 
-A **local-only** password generator and analyzer with a Y2K poster aesthetic. Generate crypto-strong secrets, see exactly how long they'd survive an attacker — and nothing you type ever leaves your device.
+A **local-only** password generator and analyzer with a Y2K poster aesthetic. Generate crypto-strong secrets and see exactly how long they would survive an attacker. Nothing you type ever leaves your device.
 
 [![CI](https://github.com/dominikkoenitzer/Entropy/actions/workflows/ci.yml/badge.svg)](https://github.com/dominikkoenitzer/Entropy/actions/workflows/ci.yml)
 [![Live](https://img.shields.io/badge/live-entropy.punds.ch-ccff00?logo=vercel&logoColor=black)](https://entropy.punds.ch)
@@ -18,14 +18,14 @@ A **local-only** password generator and analyzer with a Y2K poster aesthetic. Ge
 **[→ Try it at entropy.punds.ch](https://entropy.punds.ch)**
 
 
-<img src="docs/screenshot.png" alt="Entropy — password generator with live entropy readout" width="880" />
+<img src="docs/screenshot.png" alt="Entropy: password generator with live entropy readout" width="880" />
 
 </div>
 
 ---
 
 > [!IMPORTANT]
-> **Everything runs in your browser.** Entropy has no backend, no API routes, and no persistence — passwords are generated and analyzed entirely on-device and are never sent anywhere. The only network traffic is privacy-respecting page-view analytics (`@vercel/analytics`), which never sees password values.
+> **Everything runs in your browser.** Entropy has no backend, no API routes and no persistence. Passwords are generated and analyzed on-device and are never sent anywhere. The only network traffic is privacy-respecting page-view analytics (`@vercel/analytics`), which never sees password values.
 
 ## Table of contents
 
@@ -41,30 +41,30 @@ A **local-only** password generator and analyzer with a Y2K poster aesthetic. Ge
 
 ## Features
 
-- **Generate** — crypto-strong random passwords and passphrases. Randomness comes from `crypto.getRandomValues` with unbiased rejection sampling — **never** `Math.random()` for password material. Tune length or word count, toggle character sets, and watch the entropy (in bits) count up live.
-- **Passphrases** — word-based secrets drawn from the bundled **EFF wordlist**, for memorable-yet-strong credentials.
-- **Analyze** — paste any password and get a **zxcvbn-grade** strength estimate: it matches dictionary words (including reversed + l33t), keyboard walks, repeats, sequences, and dates, brute-forces at the password's true cardinality, and finds the *cheapest* attack path via dynamic programming.
-- **Real crack times** — strength is reported as five attacker scenarios with an attack-path decomposition and actionable feedback. Tiers are calibrated to an **offline attacker (~10¹⁰ guesses/sec)**, so the label never contradicts the time.
-- **Entropy, made visible** — a seeded generative-art renderer turns each secret into SVG contour art.
-- **Keyboard-first** — `r` to regenerate, `c` to copy. Respects `prefers-reduced-motion`.
+- **Generate.** Crypto-strong random passwords and passphrases. Randomness comes from `crypto.getRandomValues` with unbiased rejection sampling, and **never** from `Math.random()` for password material. Tune length or word count, toggle character sets, and watch the entropy in bits count up live.
+- **Passphrases.** Word-based secrets drawn from the bundled **EFF wordlist**, for credentials that are memorable and still strong.
+- **Analyze.** Paste any password and get a **zxcvbn-grade** strength estimate. It matches dictionary words (reversed and l33t included), keyboard walks, repeats, sequences and dates, brute-forces at the password's true cardinality, and searches out the cheapest attack path with dynamic programming.
+- **Real crack times.** Strength is reported as five attacker scenarios with an attack-path decomposition and specific feedback. Tiers are calibrated to an **offline attacker at roughly 10¹⁰ guesses/sec**, so the label never contradicts the time next to it.
+- **Entropy, made visible.** A seeded generative-art renderer turns each secret into SVG contour art.
+- **Keyboard-first.** `r` to regenerate, `c` to copy. Respects `prefers-reduced-motion`.
 
 ## How it works
 
-Entropy keeps **pure logic** (`src/lib/`) separate from **React UI** (`src/components/`) — every logic module is DOM-free and deterministic where possible:
+Entropy keeps **pure logic** (`src/lib/`) separate from **React UI** (`src/components/`). Every logic module is DOM-free and deterministic where it can be:
 
-- **`entropy-core.ts`** — the generation engine: character sets, crypto-strong random generation, entropy math, strength tiers, and `crackTime(bits)`.
-- **`strength.ts`** — the analysis engine: a self-contained zxcvbn-grade guess estimator that finds the cheapest attack path and returns guesses → bits → crack times + feedback.
-- **`analyze.ts`** — a thin wrapper that's **dynamically imported**, so the ~90 KB dictionaries are code-split out of first paint and the generate path stays light.
-- Wordlists and analyzer dictionaries are **generated at build time** (`bun run dict` downloads reputable lists), then committed and bundled — so there's **no runtime network**.
+- **`entropy-core.ts`** is the generation engine: character sets, crypto-strong random generation, entropy math, strength tiers, and `crackTime(bits)`.
+- **`strength.ts`** is the analysis engine, a self-contained zxcvbn-grade guess estimator that finds the cheapest attack path and returns guesses, then bits, then crack times and feedback.
+- **`analyze.ts`** is a thin wrapper, **dynamically imported**, so the ~90 KB of dictionaries is code-split out of first paint and the generate path stays light.
+- Wordlists and analyzer dictionaries are **generated at build time** by `bun run dict`, which downloads reputable lists, then committed and bundled. There is **no runtime network**.
 
 ## Tech stack
 
 - **[Next.js 16](https://nextjs.org/)** (App Router, Turbopack) + **[React 19](https://react.dev/)**
-- **[TypeScript 5](https://www.typescriptlang.org/)** — pure, DOM-free logic modules
+- **[TypeScript 5](https://www.typescriptlang.org/)**, with pure DOM-free logic modules
 - **[Tailwind CSS 4](https://tailwindcss.com/)** with a hand-written Y2K theme
 - Self-hosted **Anton / Space Grotesk / JetBrains Mono** via `next/font` (no runtime Google request)
 - **[Vercel](https://vercel.com/)** hosting + privacy-respecting `@vercel/analytics`
-- **No backend** — 100% client-side
+- **No backend.** 100% client-side
 
 Package manager: **Bun**.
 
@@ -84,7 +84,7 @@ bun install
 bun run dev
 ```
 
-No configuration or API keys — Entropy runs entirely client-side.
+No configuration and no API keys. Entropy runs entirely client-side.
 
 ## Scripts
 
@@ -102,12 +102,12 @@ No configuration or API keys — Entropy runs entirely client-side.
 
 ## Privacy
 
-Privacy isn't a feature here — it's the whole point.
+Privacy is not a feature here. It is the whole point.
 
 - **Nothing leaves the device.** Generation and analysis run entirely in your browser. There is no backend, no API, and no storage of any secret.
 - **Crypto-grade randomness.** Password material uses `crypto.getRandomValues`, never `Math.random()`.
 - **No runtime network.** Dictionaries are downloaded once at build time and bundled; the app makes no network calls for its core function.
-- **Analytics see page views only** — never the contents of any field.
+- **Analytics see page views only,** never the contents of any field.
 
 ## Project structure
 
@@ -127,13 +127,13 @@ Entropy is a static site deployed on **[Vercel](https://vercel.com/)** (live at 
 
 GitHub Actions:
 
-- **[`ci.yml`](.github/workflows/ci.yml)** — on every push and pull request to `main`: install, **type-check**, and **build**.
-- **[`deploy.yml`](.github/workflows/deploy.yml)** — optional production deploy via the Vercel CLI, gated on the `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID` secrets; a no-op otherwise (Vercel's Git integration handles deploys by default).
+- **[`ci.yml`](.github/workflows/ci.yml)** runs on every push and pull request to `main`: install, **type-check**, **build**.
+- **[`deploy.yml`](.github/workflows/deploy.yml)** is an optional production deploy through the Vercel CLI, gated on the `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` secrets. Without them it is a no-op, since Vercel's Git integration handles deploys by default.
 
 [Dependabot](.github/dependabot.yml) keeps Bun and GitHub Actions dependencies current weekly.
 
 ## Author
 
-**dominikkoenitzer** — software engineer in Zürich, Switzerland.
+**dominikkoenitzer**, software engineer in Zürich, Switzerland.
 
 [dk.punds.ch](https://dk.punds.ch) · [CV](https://dk.punds.ch/cv) · [@dominikkoenitzer](https://github.com/dominikkoenitzer) · [dominikkoenitzer@users.noreply.github.com](mailto:dominikkoenitzer@users.noreply.github.com)

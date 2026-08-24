@@ -37,7 +37,7 @@ describe('estimateStrength — pattern matchers', () => {
   });
 
   it('matches keyboard walks', () => {
-    // Vertical walks down three adjacent columns. Deliberately not 'qwerty' —
+    // Vertical walks down three adjacent columns. Deliberately not 'qwerty',
     // that is itself a top-ranked password, so the search correctly prefers the
     // cheaper dictionary match and never reports it as spatial.
     expect(patternsOf('tgbyhnujm')).toContain('spatial');

@@ -1,16 +1,16 @@
-/* ============================================================
-   strength-data.ts — reference data for the guess-estimation engine.
-
-   The ranked dictionaries (common passwords, English words, names, surnames)
-   are DOWNLOADED at build time by scripts/build-dict.mjs and live in
-   ./strength-dict.generated. They are bundled — there is no runtime network
-   call, consistent with the project's local-only constraint. To refresh them:
-   `bun run dict`.
-
-   This module owns the small, stable, hand-authored data: the l33t-speak
-   substitution table and the keyboard adjacency graphs built from physical
-   layouts.
-   ============================================================ */
+/**
+ * Reference data for the guess-estimation engine.
+ *
+ * The ranked dictionaries (common passwords, English words, names, surnames)
+ * are downloaded at build time by scripts/build-dict.mjs and live in
+ * ./strength-dict.generated. They are bundled, so there is no runtime network
+ * call, which is what the project's local-only constraint requires. Refresh
+ * them with `bun run dict`.
+ *
+ * What this module owns is the small, stable, hand-authored data: the l33t
+ * substitution table and the keyboard adjacency graphs built from physical
+ * layouts.
+ */
 
 import { PASSWORDS, ENGLISH, FIRST_NAMES, SURNAMES } from './strength-dict.generated';
 

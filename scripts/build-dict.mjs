@@ -1,15 +1,16 @@
-/* ============================================================
-   build-dict.mjs — regenerates the bundled wordlist modules.
+/*
+   Regenerates the bundled wordlist modules.
 
    Downloads reputable, license-clean lists, normalises and rank-truncates
-   them, and writes committed TypeScript modules the app bundles. Keeps the
-   analyzer's dictionaries and the passphrase wordlist large & accurate WITHOUT
-   hand-typing them and WITHOUT any runtime network call. Run on demand:
+   them, and writes the committed TypeScript modules the app bundles. That
+   keeps the analyzer dictionaries and the passphrase wordlist large and
+   accurate without hand-typing them and without a runtime network call.
+   Run on demand:
        bun run dict
 
    Outputs:
-     src/lib/strength-dict.generated.ts  — analyzer dictionaries (code-split)
-     src/lib/wordlist.generated.ts        — EFF passphrase wordlist (generator)
+     src/lib/strength-dict.generated.ts   analyzer dictionaries (code-split)
+     src/lib/wordlist.generated.ts        EFF passphrase wordlist (generator)
 
    Sources & licenses:
      passwords  SecLists top-N common credentials (MIT)

@@ -1,14 +1,12 @@
-/* ============================================================
-   entropy-core.ts — shared password engine
-   Pure logic, no DOM.
-
-   Generation (crypto-strong random / passphrases) and the entropy math for
-   *generated* secrets live here. Strength ANALYSIS of arbitrary passwords is
-   delegated to ./strength — a guess-estimation engine that models real attack
-   strategies (dictionaries, l33t, keyboard walks, sequences, dates, brute
-   force) rather than naive charset entropy. (The original "do not re-derive
-   the math" port was deliberately replaced with this stronger model.)
-   ============================================================ */
+/**
+ * The shared password engine. Pure logic, no DOM.
+ *
+ * Generation (crypto-strong random, passphrases) and the entropy math for
+ * generated secrets live here. Analysing an arbitrary password is delegated to
+ * ./strength, a guess-estimation engine that models real attack strategies:
+ * dictionaries, l33t, keyboard walks, sequences, dates and brute force, in
+ * place of naive charset entropy.
+ */
 
 import { humanizeSeconds, type Scenario } from './format';
 import type { PublicMatch } from './strength';
@@ -70,7 +68,7 @@ export const SETS: Record<CharClass, string> = {
   symbol: '!@#$%^&*()-_=+[]{};:,.<>?/~',
 };
 
-// characters that look alike — removed when "avoid ambiguous" is on
+// characters that look alike, removed when "avoid ambiguous" is on
 export const AMBIGUOUS = new Set('O0oIl1|`\'".,:;{}[]()/\\~'.split(''));
 
 // --- crypto-strong random ---------------------------------------------
@@ -124,7 +122,7 @@ export function bitsWords(count: number, listSize: number, extras: { number?: bo
 
 // 0..4 tier from bits. Thresholds are calibrated to a serious OFFLINE attacker
 // (fast-hash GPU, ~10^10 guesses/sec) so the label never contradicts the crack
-// time — e.g. a password that falls in seconds offline is never called "strong".
+// time, so a password that falls in seconds offline is never called "strong".
 //   < 40 bits  ~ cracked in minutes or less offline
 //   40–55      ~ hours to a few years
 //   56–71      ~ years to millennia

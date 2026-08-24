@@ -1,8 +1,9 @@
-/* ============================================================
-   format.ts — crack-time formatting & attack scenarios.
-   Deliberately dependency-free (no dictionaries) so it can live in the light
-   "generate" path as well as the heavy, code-split analyzer.
-   ============================================================ */
+/**
+ * Crack-time formatting and the attack scenarios.
+ *
+ * Dependency-free on purpose, with no dictionaries, so it can sit in the light
+ * "generate" path as well as the heavy code-split analyzer.
+ */
 
 export interface Scenario {
   key: string;

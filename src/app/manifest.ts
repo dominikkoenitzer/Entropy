@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { SITE } from '@/lib/seo';
 
 /**
- * Web App Manifest — installability + correct theming when added to a home
+ * Web App Manifest: installability and correct theming when added to a home
  * screen, and a positive PWA/SEO signal. The icon is served by app/icon.tsx.
  */
 export default function manifest(): MetadataRoute.Manifest {
