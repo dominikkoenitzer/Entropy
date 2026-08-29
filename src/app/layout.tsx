@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Anton, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
-import { SITE, KEYWORDS, structuredData } from '@/lib/seo';
+import { SITE, structuredData } from '@/lib/seo';
 import './globals.css';
 
 // All three are self-hosted by next/font (downloaded at build time, no runtime
@@ -34,14 +34,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
     default: SITE.title,
-    template: `%s — ${SITE.name}`,
+    template: `%s | ${SITE.name}`,
   },
   description: SITE.description,
   applicationName: SITE.name,
-  keywords: KEYWORDS,
-  authors: [{ name: SITE.author }],
+  authors: [{ name: SITE.author, url: SITE.authorUrl }],
   creator: SITE.author,
-  publisher: SITE.name,
+  publisher: SITE.author,
   category: 'technology',
   alternates: {
     canonical: '/',
@@ -59,7 +58,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: SITE.title,
     description: SITE.description,
-    creator: SITE.twitter,
     // images resolved from app/twitter-image.tsx
   },
   robots: {
@@ -95,8 +93,8 @@ export default function RootLayout({
       className={`dark ${anton.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
       <body>
-        {/* schema.org structured data — rich results for search engines and an
-            explicit, machine-readable description for AI crawlers. */}
+        {/* schema.org structured data: a machine-readable description of what
+            this site is, for search engines and crawlers. */}
         <script
           type="application/ld+json"
           // Static, build-time JSON from our own config. No user or secret input.
