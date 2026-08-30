@@ -240,6 +240,19 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 .wmfoot { display: flex; justify-content: space-between; gap: 12px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; }
 .wmfoot .c { color: var(--mag); font-weight: 700; }
 
+/* ---- about + footer (poster back matter) ---- */
+/* Visible prose about how the tool works. The page is otherwise all controls,
+   which leaves crawlers and answer engines nothing to quote. */
+.about { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--shell-gap); margin-top: var(--shell-gap); }
+.about section { background: var(--black); padding: var(--panel-pad); min-width: 0; }
+.about h2 { margin: 0 0 10px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--acid); }
+.about p { margin: 0; font-size: 13px; line-height: 1.65; color: var(--paper); }
+.about code { font-family: var(--font-mono); font-size: 12px; color: var(--acid); }
+.foot { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: space-between; margin-top: var(--shell-gap); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.foot a { color: var(--ink-dim); text-decoration: none; transition: color .14s; }
+.foot a:hover { color: var(--acid); }
+
 /* ---- keyboard focus ---- */
 :focus-visible { outline: 2px solid var(--mag); outline-offset: 2px; }
 
@@ -252,6 +265,7 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
   .main { grid-template-columns: 1fr; }
   .rail { order: 2; }
   .stage { order: 1; }
+  .about { grid-template-columns: 1fr; }
 }
 
 /* Very narrow phones: keep the strength row from crowding and stack the two
