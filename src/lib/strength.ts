@@ -572,7 +572,7 @@ function getFeedback(password: string, sequence: Match[], bits: number): { warni
   // "good" or better (≥ 56 bits) gets no nagging; weaker passwords get warned.
   if (bits >= 56) {
     const s: string[] = [];
-    if (bits < 72 && password.length < 16) s.push('Solid — adding length or words pushes it higher still.');
+    if (bits < 72 && password.length < 16) s.push('Solid. Adding length or words pushes it higher still.');
     return { warning: '', suggestions: s };
   }
 
@@ -585,7 +585,7 @@ function getFeedback(password: string, sequence: Match[], bits: number): { warni
     case 'dictionary':
       if (longest.dictionaryName === 'passwords') warning = longest.rank! <= 20 ? 'This is a top-20 most common password.' : 'This is a frequently used password.';
       else if (longest.dictionaryName === 'names' || longest.dictionaryName === 'surnames') warning = 'Names and surnames are easy to guess.';
-      else warning = 'A single word is easy to guess — a phrase of several words is far stronger.';
+      else warning = 'A single word is easy to guess. A phrase of several words is far stronger.';
       if (longest.l33t) suggestions.push('Predictable substitutions like @ for a barely help.');
       if (uppercaseVariations(longest.token) <= 2 && /[A-Z]/.test(longest.token)) suggestions.push('Capitalize more than the first letter.');
       break;
@@ -608,7 +608,7 @@ function getFeedback(password: string, sequence: Match[], bits: number): { warni
       break;
   }
 
-  if (password.length < 12) suggestions.push('Make it longer — length matters more than complexity.');
+  if (password.length < 12) suggestions.push('Make it longer. Length matters more than complexity.');
   if (sequence.length <= 2) suggestions.push('Add more unrelated words or characters.');
   return { warning, suggestions };
 }

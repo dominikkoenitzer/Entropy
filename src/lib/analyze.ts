@@ -18,7 +18,7 @@ import { tier, tierInfo, TIERS, crackTime, type Analysis, type CharClass } from 
 export function analyze(pw: string): Analysis {
   const empty: Analysis = {
     value: '', bits: 0, length: 0, pool: 0, classes: [],
-    crack: '—', tier: 0, tierInfo: TIERS[0], notes: [],
+    crack: '···', tier: 0, tierInfo: TIERS[0], notes: [],
     guesses: 0, scenarios: [], sequence: [], warning: '', suggestions: [],
   };
   if (!pw) return empty;

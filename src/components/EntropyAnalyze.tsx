@@ -55,9 +55,9 @@ export default function EntropyAnalyze() {
             Password
           </h3>
           <p>
-            Strength is modelled the way an attacker actually cracks passwords —
-            dictionaries, l33t, keyboard walks, repeats, sequences and dates —
-            then the <span className="star">cheapest attack path</span> is
+            Strength is modelled the way an attacker actually cracks passwords:
+            dictionaries, l33t, keyboard walks, repeats, sequences and dates.
+            Then the <span className="star">cheapest attack path</span> is
             costed across five scenarios. Everything is computed{' '}
             <span className="star">instantly</span> and{' '}
             <span className="star">never leaves this device.</span>

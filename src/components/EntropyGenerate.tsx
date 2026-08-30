@@ -380,14 +380,14 @@ export default function EntropyGenerate() {
             ))}
           </div>
           <span className="lbl" style={{ color: tierColor }}>
-            {current ? tierInfo(current.bits).label.toUpperCase() : '—'}
+            {current ? tierInfo(current.bits).label.toUpperCase() : '···'}
           </span>
           <span className="bits">
             {displayBits} <span>BITS</span>
           </span>
         </div>
         <div className="crackrow">
-          Avg. crack time <b>{current ? crackTime(current.bits) : '—'}</b>
+          Avg. crack time <b>{current ? crackTime(current.bits) : '···'}</b>
         </div>
 
         <div className="acts">

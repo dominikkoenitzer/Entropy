@@ -141,7 +141,7 @@ export const TIERS: TierInfo[] = [
   { key: 'fair', label: 'fair', hint: 'ok for low stakes' },
   { key: 'good', label: 'good', hint: 'solid for most uses' },
   { key: 'strong', label: 'strong', hint: 'great for anything' },
-  { key: 'maximum', label: 'maximum', hint: 'overkill — in a good way' },
+  { key: 'maximum', label: 'maximum', hint: 'overkill, in a good way' },
 ];
 
 export function tierInfo(bits: number): TierInfo {
