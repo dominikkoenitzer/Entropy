@@ -241,15 +241,12 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 .wmfoot .c { color: var(--mag); font-weight: 700; }
 
 /* ---- about + footer (poster back matter) ---- */
-/* Visible prose about how the tool works, set as numbered manual sections
-   with the header's dot leaders. The page is otherwise all controls, which
-   leaves crawlers and answer engines nothing to quote. */
-.about { display: flex; flex-direction: column; gap: calc(var(--panel-gap) + 6px); margin-top: var(--shell-gap); background: var(--black); padding: var(--panel-pad); }
-.about section { min-width: 0; }
-.about .ah { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--acid); white-space: nowrap; }
-.about .ah .n { color: var(--mag); font-family: var(--font-mono); }
-.about .ah .dots { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; color: var(--acid-dim); letter-spacing: 2px; }
-.about p { margin: 8px 0 0; font-size: 13px; line-height: 1.65; color: var(--paper); max-width: 72ch; }
+/* Visible prose about how the tool works. The page is otherwise all controls,
+   which leaves crawlers and answer engines nothing to quote. */
+.about { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--shell-gap); margin-top: var(--shell-gap); }
+.about section { background: var(--black); padding: var(--panel-pad); min-width: 0; }
+.about h2 { margin: 0 0 10px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--acid); }
+.about p { margin: 0; font-size: 13px; line-height: 1.65; color: var(--paper); }
 .about code { font-family: var(--font-mono); font-size: 12px; color: var(--acid); }
 .foot { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: space-between; margin-top: var(--shell-gap); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; }
 .foot nav { display: flex; flex-wrap: wrap; gap: 10px 22px; }
@@ -268,6 +265,7 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
   .main { grid-template-columns: 1fr; }
   .rail { order: 2; }
   .stage { order: 1; }
+  .about { grid-template-columns: 1fr; }
 }
 
 /* Very narrow phones: keep the strength row from crowding and stack the two
