@@ -8,8 +8,8 @@ URL: https://entropy.punds.ch
 
 - **Generate** random passwords from configurable character sets (lowercase, uppercase, digits, symbols) using the Web Crypto API (`crypto.getRandomValues`) with unbiased rejection sampling, never `Math.random`.
 - **Generate** memorable multi-word passphrases.
-- **Analyze** any existing password: entropy in bits, a strength rating, an estimated time to crack, and a breakdown of character composition.
-- All computation is client-side. There is no backend, no API, no account, no telemetry of password values, and no persistence.
+- **Analyze** any existing password with a zxcvbn-grade estimator: it matches dictionary words (including reversed and l33t variants), keyboard walks, repeats, sequences, and dates, then finds the cheapest attack path and reports entropy in bits, a strength rating, crack times for five attacker scenarios, and a breakdown of character composition.
+- All computation is client-side. There is no backend, no API, no account, and no persistence; the only analytics is page views (Vercel Analytics), never password values.
 
 ## Key facts
 
@@ -17,7 +17,9 @@ URL: https://entropy.punds.ch
 - Privacy: local-only by design; passwords never transmitted, stored, or logged.
 - Randomness: cryptographically secure (`crypto.getRandomValues`), not `Math.random`.
 - Entropy: measured in bits; each added bit doubles the guesses needed to crack a password.
-- Passphrases vs. passwords: a few random words can match a random string's entropy while being far easier to remember.
+- Passphrases vs. passwords: a few random words can match a random string's entropy while being far easier to remember. Passphrases draw from the bundled EFF wordlist.
+- Strength tiers are calibrated to an offline attacker at roughly 10^10 guesses per second, so a label never contradicts the crack time.
+- Keyboard shortcuts: `r` regenerates, `c` copies.
 - Platform: any modern web browser; built with Next.js and React.
 
 ## FAQ
@@ -27,3 +29,9 @@ URL: https://entropy.punds.ch
 - **How are passwords generated?** With the browser's cryptographically-strong RNG and unbiased sampling.
 - **What is password entropy?** A bit-count measure of unpredictability; more bits means exponentially longer crack time.
 - **Can I check my own password?** Yes. Analyze mode rates entropy, strength, and crack time locally.
+
+## Links
+
+- [Source code](https://github.com/dominikkoenitzer/Entropy): MIT-licensed repository
+- [Author](https://dk.punds.ch): dominikkoenitzer, software engineer in Switzerland
+- [Security contact](https://entropy.punds.ch/.well-known/security.txt)

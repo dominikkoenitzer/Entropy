@@ -22,6 +22,8 @@ export const SITE = {
   locale: 'en_US',
   author: 'dominikkoenitzer',
   authorUrl: 'https://dk.punds.ch',
+  authorGithub: 'https://github.com/dominikkoenitzer',
+  repo: 'https://github.com/dominikkoenitzer/Entropy',
   themeColor: '#c6f000',
   background: '#000000',
 } as const;
@@ -38,6 +40,7 @@ export function structuredData() {
     '@id': `${SITE.url}/#author`,
     name: SITE.author,
     url: SITE.authorUrl,
+    sameAs: [SITE.authorGithub],
   };
 
   return {
@@ -65,6 +68,8 @@ export function structuredData() {
         browserRequirements: 'Requires JavaScript and the Web Crypto API.',
         inLanguage: 'en',
         isAccessibleForFree: true,
+        license: 'https://opensource.org/licenses/MIT',
+        sameAs: [SITE.repo],
         isPartOf: { '@id': `${SITE.url}/#website` },
         author: { '@id': `${SITE.url}/#author` },
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },

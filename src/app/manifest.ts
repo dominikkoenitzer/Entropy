@@ -10,6 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
     name: SITE.title,
     short_name: SITE.name,
     description: SITE.description,
+    id: '/',
+    scope: '/',
     start_url: '/',
     display: 'standalone',
     background_color: SITE.background,
