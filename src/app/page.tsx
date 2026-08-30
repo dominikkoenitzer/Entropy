@@ -20,7 +20,12 @@ export default function Home() {
           Facts only, mirrored from the engine and the README. */}
       <div className="about">
         <section>
-          <h2>How generation works</h2>
+          <h2 className="ah">
+            <span className="n">01</span> How generation works
+            <span aria-hidden="true" className="dots">
+              ······································
+            </span>
+          </h2>
           <p>
             Random passwords are drawn with the Web Crypto API
             (<code>crypto.getRandomValues</code>) using unbiased rejection
@@ -31,7 +36,12 @@ export default function Home() {
           </p>
         </section>
         <section>
-          <h2>How analysis works</h2>
+          <h2 className="ah">
+            <span className="n">02</span> How analysis works
+            <span aria-hidden="true" className="dots">
+              ······································
+            </span>
+          </h2>
           <p>
             The analyzer is a zxcvbn-grade estimator. It matches dictionary
             words (including reversed and l33t variants), keyboard walks,
@@ -42,7 +52,12 @@ export default function Home() {
           </p>
         </section>
         <section>
-          <h2>Why local-only</h2>
+          <h2 className="ah">
+            <span className="n">03</span> Why local-only
+            <span aria-hidden="true" className="dots">
+              ······································
+            </span>
+          </h2>
           <p>
             There is no backend, no API and no storage: generation and
             analysis run entirely in your browser, and the dictionaries are
