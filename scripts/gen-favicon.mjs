@@ -71,4 +71,4 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vx} ${vy} ${V} $
 `;
 
 writeFileSync(new URL('../src/app/icon.svg', import.meta.url), svg);
-console.log('wrote src/app/icon.svg —', svg.length, 'bytes, seed', SEED.toString(16));
+console.log('wrote src/app/icon.svg:', svg.length, 'bytes, seed', SEED.toString(16));

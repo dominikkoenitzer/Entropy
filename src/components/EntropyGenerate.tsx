@@ -220,7 +220,7 @@ export default function EntropyGenerate() {
 
   return (
     <div className="main">
-      {/* LEFT RAIL — type, controls, history */}
+      {/* LEFT RAIL: type, controls, history */}
       <aside className="rail">
         <div className="tabs type2" role="tablist" aria-label="Generator type">
           {(['random', 'words'] as const).map((ty) => (
@@ -349,7 +349,7 @@ export default function EntropyGenerate() {
         </div>
       </aside>
 
-      {/* RIGHT STAGE — art + output */}
+      {/* RIGHT STAGE: art + output */}
       <section className="stage">
         <EntropyArt seed={seed} />
 

@@ -1,5 +1,5 @@
 /* ============================================================
-   strength-dict.generated.ts — GENERATED FILE, DO NOT EDIT BY HAND.
+   strength-dict.generated.ts: GENERATED FILE, DO NOT EDIT BY HAND.
    Regenerate with:  bun run dict   (see scripts/build-dict.mjs)
    Ranked analyzer dictionaries (rank = index + 1). Bundled, no runtime network.
    Sources: passwords SecLists (MIT) · english hermitdave FrequencyWords (MIT)

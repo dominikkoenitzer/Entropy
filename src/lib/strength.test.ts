@@ -20,7 +20,7 @@ const guessesOf = (pw: string): number => estimateStrength(pw).guesses;
 /** A password with no dictionary/spatial/sequence structure to match. */
 const RANDOM_16 = 'x7Qv#2mKp9Lz!4Rt';
 
-describe('estimateStrength — pattern matchers', () => {
+describe('estimateStrength: pattern matchers', () => {
   it('matches a common dictionary word', () => {
     expect(patternsOf('password')).toContain('dictionary');
   });
@@ -60,7 +60,7 @@ describe('estimateStrength — pattern matchers', () => {
   });
 });
 
-describe('estimateStrength — cheapest-path search', () => {
+describe('estimateStrength: cheapest-path search', () => {
   it('decomposes a repeated word rather than brute-forcing it', () => {
     const s = estimateStrength('passwordpassword');
     // The DP should cover the string with a couple of cheap matches,
@@ -85,7 +85,7 @@ describe('estimateStrength — cheapest-path search', () => {
   });
 });
 
-describe('estimateStrength — ordering and monotonicity', () => {
+describe('estimateStrength: ordering and monotonicity', () => {
   it('ranks a common password far below a random one', () => {
     expect(guessesOf('password')).toBeLessThan(guessesOf(RANDOM_16));
   });
@@ -110,7 +110,7 @@ describe('estimateStrength — ordering and monotonicity', () => {
   });
 });
 
-describe('estimateStrength — invariants', () => {
+describe('estimateStrength: invariants', () => {
   it('returns an empty result for an empty password', () => {
     const s = estimateStrength('');
     expect(s.guesses).toBe(0);
@@ -162,7 +162,7 @@ describe('estimateStrength — invariants', () => {
   });
 });
 
-describe('analyze — the UI-facing wrapper', () => {
+describe('analyze: the UI-facing wrapper', () => {
   it('returns a zeroed analysis for an empty password', () => {
     const a = analyze('');
     expect(a.bits).toBe(0);
@@ -189,7 +189,7 @@ describe('analyze — the UI-facing wrapper', () => {
   });
 });
 
-describe('entropy-core — generation maths', () => {
+describe('entropy-core: generation maths', () => {
   it('computes the pool size from the enabled sets', () => {
     expect(poolSize({ lower: true })).toBe(SETS.lower.length);
     expect(poolSize({ lower: true, upper: true })).toBe(

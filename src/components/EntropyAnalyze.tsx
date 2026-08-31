@@ -46,7 +46,7 @@ export default function EntropyAnalyze() {
 
   return (
     <div className="main">
-      {/* LEFT RAIL — blurb */}
+      {/* LEFT RAIL: blurb */}
       <aside className="rail">
         <div className="anrail">
           <h3>
@@ -65,7 +65,7 @@ export default function EntropyAnalyze() {
         </div>
       </aside>
 
-      {/* RIGHT STAGE — input + results */}
+      {/* RIGHT STAGE: input + results */}
       <section className="stage">
         <div className="anstage">
           <div className="aninput">
@@ -156,7 +156,7 @@ export default function EntropyAnalyze() {
                 </div>
               </div>
 
-              {/* how the password decomposes — the attack path */}
+              {/* how the password decomposes: the attack path */}
               {a.sequence.length > 0 && (
                 <div className="seq">
                   <div className="seqhead">Attack path · weakest decomposition</div>

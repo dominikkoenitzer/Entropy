@@ -92,7 +92,7 @@ async function get(name, urls, { alphaOnly = false, pick = 'first' } = {}) {
     r = await fetchLines(urls);
     console.log(`  ✓ ${name}: ${r.lines.length} lines from ${r.url.split('/').pop()}`);
   } catch (e) {
-    console.warn(`  ✗ ${name}: ${e.message} — using fallback`);
+    console.warn(`  ✗ ${name}: ${e.message}; using fallback`);
     return null;
   }
   const seen = new Set();
@@ -142,7 +142,7 @@ async function main() {
   const passphrase = (eff ?? FALLBACK.passphrase).filter((w) => w.length >= 3 && w.length <= 9);
 
   const dictBanner = `/* ============================================================
-   strength-dict.generated.ts — GENERATED FILE, DO NOT EDIT BY HAND.
+   strength-dict.generated.ts: GENERATED FILE, DO NOT EDIT BY HAND.
    Regenerate with:  bun run dict   (see scripts/build-dict.mjs)
    Ranked analyzer dictionaries (rank = index + 1). Bundled, no runtime network.
    Sources: passwords SecLists (MIT) · english hermitdave FrequencyWords (MIT)
@@ -160,7 +160,7 @@ async function main() {
   );
 
   const wordBanner = `/* ============================================================
-   wordlist.generated.ts — GENERATED FILE, DO NOT EDIT BY HAND.
+   wordlist.generated.ts: GENERATED FILE, DO NOT EDIT BY HAND.
    Regenerate with:  bun run dict   (see scripts/build-dict.mjs)
    Passphrase wordlist for the generator. Source: EFF "large" diceware wordlist
    (CC-BY 3.0 US, © Electronic Frontier Foundation). Bundled, no runtime network.
@@ -173,9 +173,9 @@ async function main() {
   );
 
   console.log(
-    `\nWrote strength-dict.generated.ts — passwords ${passwords.length}, english ${english.length}, names ${names.length}, surnames ${surnames.length}`
+    `\nWrote strength-dict.generated.ts: passwords ${passwords.length}, english ${english.length}, names ${names.length}, surnames ${surnames.length}`
   );
-  console.log(`Wrote wordlist.generated.ts — passphrase ${passphrase.length} words`);
+  console.log(`Wrote wordlist.generated.ts: passphrase ${passphrase.length} words`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

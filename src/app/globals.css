@@ -225,7 +225,7 @@ input[type=range]::-moz-range-thumb { width: 16px; height: 24px; background: var
 .seqhead { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); font-weight: 700; }
 .seqrow { display: flex; flex-wrap: wrap; gap: 6px; }
 /* Borderless, like the rest of the poster: exploitable chunks read magenta
-   (weak), random/brute chunks read acid (strong) — the same colour semantic
+   (weak), random/brute chunks read acid (strong), the same colour semantic
    used everywhere else. Surface fill, no rules. */
 .seqchip { display: flex; flex-direction: column; gap: 2px; padding: 8px 11px; background: var(--surface); min-width: 0; max-width: 100%; }
 .seqchip.rand { background: var(--black-2); }
