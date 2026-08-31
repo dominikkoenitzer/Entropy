@@ -53,7 +53,7 @@ export default function Home() {
       </div>
 
       <footer className="foot">
-        <span>© 2026 dominikkoenitzer</span>
+        <span>© 2026 Entropy</span>
         <nav aria-label="Footer">
           <a href="https://github.com/dominikkoenitzer/Entropy">Source · MIT</a>
           <a href="https://dk.punds.ch">Author</a>

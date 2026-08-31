@@ -33,5 +33,5 @@ URL: https://entropy.punds.ch
 ## Links
 
 - [Source code](https://github.com/dominikkoenitzer/Entropy): MIT-licensed repository
-- [Author](https://dk.punds.ch): dominikkoenitzer, software engineer in Switzerland
+- [Author](https://github.com/dominikkoenitzer): dominikkoenitzer
 - [Security contact](https://entropy.punds.ch/.well-known/security.txt)
